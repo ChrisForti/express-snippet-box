@@ -1,0 +1,11 @@
+{
+  "name": "express-snippet-box",
+  "version": "1.0.0",
+  "description": "An API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Chris forti",
+  "license": "ISC"
+}
