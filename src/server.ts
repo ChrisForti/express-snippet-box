@@ -2,10 +2,14 @@ import express from "express";
 
 const app = express();
 
+const PORT = process.env.PORT ?? 3000;
+
 app.get("/hello", (req, res) => {
-  res.json({ serverMessage: "Hello world" });
+  res.json({ serverMessage: "Hello world!" });
 });
 
-app.listen(3000, () => {
-  console.log("server running at http://localhost:3000");
+app.listen(PORT, () => {
+  if (process.env.NODE_ENV === "development") {
+    console.log(`server running at http://localhost:${PORT}`);
+  }
 });
