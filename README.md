@@ -26,4 +26,4 @@ This is a strictly backend Api that will serve snippets of code, and uses mySQL 
 
 ![Node Current (with tag)](https://img.shields.io/node/v/:packageName/:tag)
 ![NPM Current (with tag)](https://img.shields.io/npm/v/npm.svg?logo=nodedotjs)
-![Javascrit Current (with tag)](https://img.shields.io/badge/logo-javascript-blue?logo=javascript)
+![Javascrit Current (with tag)](https://img.shields.io/badge/javascript-blue?logo=javascript)
