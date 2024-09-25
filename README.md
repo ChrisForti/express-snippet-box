@@ -1,6 +1,6 @@
 # Snippet box API
 
-This is a backend Api that will serve snippets of code, and uses mySQL as a Database.
+This is a strictly backend Api that will serve snippets of code, and uses mySQL as a Database. That will be used as training, about the relationship of REST Api's, and DB's.
 
 ## getting started
 
