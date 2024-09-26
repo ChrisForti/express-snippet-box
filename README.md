@@ -22,6 +22,10 @@ This is a strictly backend Api that will serve snippets of code, and uses mySQL 
 
 - `npm run dev`
 
+5. Finally when you are ready to build an artifact
+
+- `npm run build`
+
 ### Built with
 
 ![NPM Current (with tag)](https://img.shields.io/npm/v/npm.svg?logo=nodedotjs)
