@@ -1,13 +1,33 @@
 # Snippet box API
 
-Fill out descriptions for homework using Markdown.
+This is a strictly backend Api that will serve snippets of code, and uses mySQL as a Database. That will be used as training, about the relationship of REST Api's, and DB's.
 
 ## getting started
 
-1.
-2.
-3.
+1. First you want to make sure you are in a directory, within your file system. That you would like to house this repo, and then clone the repository.
+   **HTTPS** run: `git clone https://github.com/ChrisForti/express-snippet-box.git`
+   **SSH** run: `git clone git@github.com:ChrisForti/express-snippet-box.git`
+
+2. Then move into the code base
+
+- `cd express-snippet-box`
+
+3. Install your node_modules
+
+- `npm install`
 
 ## Usage
 
-`npm run dev`
+4. Now you are ready to kick the tires
+
+- `npm run dev`
+
+5. Finally when you are ready to build an artifact
+
+- `npm run build`
+
+### Built with
+
+![NPM Current (with tag)](https://img.shields.io/npm/v/npm.svg?logo=nodedotjs)
+![Javascrit Current (with tag)](https://img.shields.io/badge/javascript-blue?logo=javascript)
+![typescript Current (with tag)](https://img.shields.io/badge/TypeScript-v5.6.2-blue)
