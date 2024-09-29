@@ -5,8 +5,8 @@ This is a strictly backend Api that will serve snippets of code, and uses mySQL 
 ## getting started
 
 1. First you want to make sure you are in a directory, within your file system. That you would like to house this repo, and then clone the repository.
-   **HTTPS** run: `git clone https://github.com/ChrisForti/express-snippet-box.git`
-   **SSH** run: `git clone git@github.com:ChrisForti/express-snippet-box.git`
+   - **HTTPS** run: `git clone https://github.com/ChrisForti/express-snippet-box.git`
+   - **SSH** run: `git clone git@github.com:ChrisForti/express-snippet-box.git`
 
 2. Then move into the code base
 
