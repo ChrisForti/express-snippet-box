@@ -1,6 +1,6 @@
 # Snippet Box API
 
-This is a strictly backend Api that will serve snippets of code, and uses postgress as a Database.
+This is a strictly backend Api that will serve snippets of code, and uses postgres as a Database.
 ## Getting started
 
 1. First you want to make sure you are in a directory, within your file system. That you would like to house this repo, and then clone the repository.
