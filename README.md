@@ -1,11 +1,11 @@
-# Snippet box API
+# Snippet Box API
 
 This is a strictly backend Api that will serve snippets of code, and uses mySQL as a Database. That will be used as training, about the relationship of REST Api's, and DB's.
 
-## getting started
+## Getting started
 
 1. First you want to make sure you are in a directory, within your file system. That you would like to house this repo, and then clone the repository.
-   - **HTTPS** run: `git clone https://github.com/ChrisForti/express-snippet-box.git`
+
    - **SSH** run: `git clone git@github.com:ChrisForti/express-snippet-box.git`
 
 2. Then move into the code base
@@ -22,9 +22,7 @@ This is a strictly backend Api that will serve snippets of code, and uses mySQL 
 
 - `npm run dev`
 
-5. Finally when you are ready to build an artifact
 
-- `npm run build`
 
 ### Built with
 
