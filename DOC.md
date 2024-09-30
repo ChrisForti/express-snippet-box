@@ -13,5 +13,7 @@
 
 - `docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
 - Then run: `psql -U postgres -h localhost`
-  **You should see**
-  ![This](./assets/screenshot.png)
+
+### You should see this your terminal if all is well
+
+![This](./assets/screenshot.png)
