@@ -12,8 +12,8 @@ We need a way track the users??? */
 
 CREATE TABLE IF NOT EXISTS snippets(
     title varchar(100) not null,
-    creation_date int default extract (epoch from now()) not null,
-    expiration_date int default extract (epoch from now() + interval '1 month') not null,
+    creation_date integer default extract (epoch from now()) not null,
+    expiration_date integer default extract (epoch from now() + interval '1 month') not null,
     snippet_id uuid default gen_random_uuid() primary key not null,
     snippet_owner integer not null,
     foreign key (snippet_owner) references users (id),
