@@ -5,5 +5,16 @@ CREATE TABLE IF NOT EXISTS users(
     last_name varchar(25)
 );
 
-/* Another table called snippets, what ius the data we need, lookup foreign key relationship.
+/* Homework: Is another table called snippets,
+ what ius the data we need, 
+ lookup foreign key relationship.
 We need a way track the users??? */
+
+CREATE TABLE IF NOT EXISTS snippets(
+    creation_date int default extract (epoch from now()) not null,
+    expiration_date int default extract (epoch from now() + interval '1 month') not null,
+    snippet_id uuid default gen_random_uuid() primary key not null,
+    snippet_owner integer not null,
+    foreign key (snippet_owner) references users (id),
+    content text not null
+);
