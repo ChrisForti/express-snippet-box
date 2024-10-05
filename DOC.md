@@ -4,7 +4,7 @@
   - `brew install libpq`
   - Check if its there: `which psql`
 - Next login to docker, and get it online,
-  - Once inside docker set up special params:
+  - Once inside docker set up Optional settings:
 
 1. name of project
 2. POSTGRES_PASSWORD password
