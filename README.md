@@ -41,3 +41,4 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
 ![NPM Current (with tag)](https://img.shields.io/npm/v/npm.svg?logo=nodedotjs)
 ![Javascrit Current (with tag)](https://img.shields.io/badge/javascript-blue?logo=javascript)
 ![typescript Current (with tag)](https://img.shields.io/badge/TypeScript-v5.6.2-blue)
+![Docker Pulls](https://img.shields.io/docker/pulls/:user/:repo)
