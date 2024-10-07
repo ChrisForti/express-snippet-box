@@ -23,3 +23,4 @@ CREATE TABLE IF NOT EXISTS snippets(
 );
 
 /*in project find a way to connect ourselves*/
+/* Make a file snippet.ts with crud ops 

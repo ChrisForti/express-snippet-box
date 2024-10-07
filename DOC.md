@@ -18,3 +18,7 @@
 ### Once you enter said password you should see this your terminal.
 
 ![This](./assets/screenshot.png)
+
+# curl command
+
+`curl -d '{"username": "Chris"}' -H "Content-Type: application/json" -X POST localhost:3000/user`
