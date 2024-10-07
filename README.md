@@ -21,9 +21,9 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
 4. Get docker online, and run the postgres container:
 
 - If you have not already created a container from the project dependant image see [DOC.md](DOC.md)
-- **In your terminal**
+- **In your terminal:**
   `psql -U postgres -h localhost`
-- **For a basic GUI**
+- **For a basic GUI:**
   `curl -X POST localhost:8080/user`
 
 5. Once you are linked up, run the server:
