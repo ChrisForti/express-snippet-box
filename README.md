@@ -18,15 +18,20 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
 
 ## Usage
 
-4. To start up docker, and access the model via the postgres container:
+4. Get docker online, and run the postgres container: If you have not already created a container from the project dependant image see [DOC.md](DOC.md)
+   **In your terminal**
+   `psql -U postgres -h localhost`
+   **For a basic GUI**
+   `curl -X POST localhost:8080/user`
+5. Once you are linked up, run the server:
+
+- `npm run dev`
+
+  **You can also start the containers detached**
 
 - `docker-compose up -d`
   **then to stop them:**
 - `docker-compose down`
-
-To run the server:
-
-- `npm run dev`
 
 ### Built with
 
