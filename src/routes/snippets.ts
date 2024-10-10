@@ -36,3 +36,24 @@ snippetRouter.put("/", async (req, res) => {
     res.status(500).send("Failed to update snippet title");
   }
 });
+// Function to delete a snippet by ID
+export const deleteSnippet = async (id: string) => {
+  try {
+    await pool.query("DELETE FROM snippets WHERE snippet_id = $1", [id]);
+  } catch (error) {
+    console.error("Error deleting snippet:", error);
+    throw error;
+  }
+  // Route handler function for deleting a snippet
+  snippetRouter.delete("/", async (req, res) => {
+    const id = req.params;
+
+    try {
+      await deleteSnippet(id);
+      res.status(200).send("Snippet deleted successfully");
+    } catch (error) {
+      console.error("Error deleting snippet:", error);
+      res.status(500).send("Failed to delete snippet");
+    }
+  });
+};
