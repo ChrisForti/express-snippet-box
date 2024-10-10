@@ -18,7 +18,6 @@ snippetRouter.post("/", async (req, res) => {
   }
   if (error instanceof Error) {
     if ("code" in error && error.code === "23503") {
-      // Foreign key violation
       res.status(400).json({ message: "Invalid user_id provided" });
     } else {
       res.status(500).json({ message: "Failed to create snippet" });
@@ -26,25 +25,14 @@ snippetRouter.post("/", async (req, res) => {
   }
 });
 
-// Function to update a snippet's title needs a handler
-export async function updateSnippetTitle(id: string, newTitle: string) {
+// Function to update a snippet's title
+snippetRouter.put("/", async (req, res) => {
+  const { id, newTitle } = req.body;
   try {
-    await pool.query("UPDATE snippets SET title = $1 WHERE snippet_id = $2", [
-      newTitle,
-      id,
-    ]);
+    await pool.query(id, newTitle);
+    res.status(200).send("Snippet title updated successfully");
   } catch (error) {
     console.error("Error updating snippet title:", error);
-    throw error;
+    res.status(500).send("Failed to update snippet title");
   }
-}
-
-// Function to delete a snippet by ID needs a handler
-export async function deleteSnippet(id: string) {
-  try {
-    await pool.query("DELETE FROM snippets WHERE snippet_id = $1", [id]);
-  } catch (error) {
-    console.error("Error deleting snippet:", error);
-    throw error;
-  }
-}
+});
