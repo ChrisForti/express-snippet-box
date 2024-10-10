@@ -5,13 +5,6 @@ CREATE TABLE IF NOT EXISTS users(
     last_name varchar(25)
 );
 
-/* Homework: Is another table called snippets,
- what ius the data we need, 
- lookup foreign key relationship.
-We need a way track the users??? 
-user_id bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
- snippet_owner integer not null,
-    foreign key (snippet_owner) references users (id),*/
 
 CREATE TABLE IF NOT EXISTS snippets(
     title varchar(255) not null,
@@ -22,5 +15,3 @@ CREATE TABLE IF NOT EXISTS snippets(
     content text not null
 );
 
-/*in project find a way to connect ourselves*/
-/* Make a file snippet.ts with crud ops 
