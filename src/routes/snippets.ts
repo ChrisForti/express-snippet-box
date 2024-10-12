@@ -70,7 +70,7 @@ async function getSnippetByUser(req: Request, res: Response) {
     res.json(snippet.rows);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to retrieve snippets" });
+    res.status(500).json({ message: "failed to retrieve snippets" });
   }
 }
 
