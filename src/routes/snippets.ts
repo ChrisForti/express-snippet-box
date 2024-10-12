@@ -37,14 +37,14 @@ async function createSnippet(req: Request, res: Response) {
       [title, expiration_date, user_id, content]
     );
   } catch (error) {
-    console.error("Error creating snippet:", error);
+    console.error("error creating snippet:", error);
     throw error;
   }
   if (error instanceof Error) {
     if ("code" in error && error.code === "23503") {
-      res.status(400).json({ message: "Invalid user_id provided" });
+      res.status(400).json({ message: "invalid user_id provided" });
     } else {
-      res.status(500).json({ message: "Failed to create snippet" });
+      res.status(500).json({ message: "failed to create snippet" });
     }
   }
 }
