@@ -73,7 +73,7 @@ async function updateTitle(req: Request, res: Response) {
 snippetRouter.delete("/:snippet_id", deleteSnippet);
 
 async function deleteSnippet(req: Request, res: Response) {
-  const { snippet_id } = req.params; //destructure to get snippet_id
+  const { snippet_id } = req.body; //destructure to get snippet_id
   if (!snippet_id) {
     //incoming data validation
     return res.status(400).json({ message: "snippet_id is missing" });
@@ -88,13 +88,13 @@ async function deleteSnippet(req: Request, res: Response) {
       [snippet_id]
     );
     if (deletedSnippet.rows.length === 0) {
-      res.status(404).json({ message: "Snippet not found" });
+      res.status(404).json({ message: "snippet not found" });
     } else {
-      res.json({ message: "Snippet successfully deleted" });
+      res.json({ message: "snippet successfully deleted" });
     }
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Failed to delete snippet" });
+    res.status(500).json({ message: "failed to delete snippet" });
   }
 }
 export { snippetRouter };
