@@ -49,7 +49,7 @@ async function createSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/:user_id", getSnippetByUser);
+snippetRouter.get("/:userId", getSnippetByUser);
 // Function handler to read/get a snippet
 async function getSnippetByUser(req: Request, res: Response) {
   const { user_id } = req.params;
@@ -74,7 +74,7 @@ async function getSnippetByUser(req: Request, res: Response) {
   }
 }
 
-snippetRouter.put("/:snippet_id", updateSnippet);
+snippetRouter.put("/:snippetId", updateSnippet);
 // Function to update a snippet
 async function updateSnippet(req: Request, res: Response) {
   const { snippet_id } = req.params;
@@ -123,7 +123,7 @@ async function updateSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.delete("/:snippet_id", deleteSnippet);
+snippetRouter.delete("/:snippetId", deleteSnippet);
 // Function to delete a snippet
 async function deleteSnippet(req: Request, res: Response) {
   const { snippet_id } = req.body; // get snippet_id
