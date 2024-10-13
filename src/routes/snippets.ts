@@ -41,7 +41,7 @@ async function createSnippet(req: Request, res: Response) {
     throw error;
   }
   if (error instanceof Error) {
-    if ("code" in error && error.code === "23503") {
+    if ("code" in error && error.code) {
       res.status(400).json({ message: "invalid user_id provided" });
     } else {
       res.status(500).json({ message: "failed to create snippet" });
@@ -49,9 +49,9 @@ async function createSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/:userId", getSnippetByUserId);
+snippetRouter.get("/all/:userId", getAllSnippetsByUserId);
 // Function handler to read/get a snippet
-async function getSnippetByUserId(req: Request, res: Response) {
+async function getAllSnippetsByUserId(req: Request, res: Response) {
   const { userId } = req.params;
   if (!userId) {
     // data validation
@@ -64,7 +64,7 @@ async function getSnippetByUserId(req: Request, res: Response) {
 
   try {
     const snippet = await pool.query(
-      "SELECT * FROM snippet WHERE user_id = $1",
+      "SELECT * FROM snippets WHERE user_id = $1",
       [userId]
     );
     res.json(snippet.rows);
@@ -73,9 +73,10 @@ async function getSnippetByUserId(req: Request, res: Response) {
     res.status(500).json({ message: "failed to retrieve snippets" });
   }
 }
+// create handler to get a single snippet id
 
 snippetRouter.put("/:snippetId", updateSnippet);
-// Function to update a snippet
+// Function handler to update a snippet
 async function updateSnippet(req: Request, res: Response) {
   const { snippetId } = req.params;
   if (!snippetId) {
@@ -138,7 +139,7 @@ async function deleteSnippet(req: Request, res: Response) {
 
   try {
     const deletedSnippet = await pool.query(
-      "DELETE FROM snippets WHERE snippetId = $1 RETURNING *",
+      "DELETE FROM snippets WHERE id = $1 RETURNING *",
       [snippetId]
     );
     if (deletedSnippet.rows.length === 0) {
@@ -152,3 +153,4 @@ async function deleteSnippet(req: Request, res: Response) {
   }
 }
 export { snippetRouter };
+// verify snippet or snippets
