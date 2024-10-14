@@ -40,8 +40,8 @@ async function createUser(req: Request, res: Response) {
     );
     res.status(201).json(newUser.rows[0]);
   } catch (error) {
-    console.error("error creating user:", error);
-    throw error;
+    console.error(error);
+    res.status(500).json({ message: "new user was not created" });
   }
 }
 
