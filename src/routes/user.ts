@@ -11,26 +11,26 @@ async function createUser(req: Request, res: Response) {
   const emailRx =
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
   if (!email.match(emailRx)) {
-    return res.status(400).json({ message: "email format is invalid" });
+    return res.status(400).json({ msg: "email format is invalid" });
   }
   if (!email) {
-    return res.status(400).json({ message: "email is missing" });
+    return res.status(400).json({ msg: "email is missing" });
   }
   if (!firstName) {
     // data validation
-    return res.status(400).json({ message: "firstName is missing" });
+    return res.status(400).json({ msg: "first name is missing" });
   }
   if (!lastName) {
     // data validation
-    return res.status(400).json({ message: "lastName is missing" });
+    return res.status(400).json({ msg: "last name is missing" });
   }
   if (!password) {
     // data validation
-    return res.status(400).json({ message: "password is missing" });
+    return res.status(400).json({ msg: "password is missing" });
   }
   if (!emailVerified) {
     // data validation
-    return res.status(400).json({ message: "email could not be verified" });
+    return res.status(400).json({ msg: "email could not be verified" });
   }
 
   try {
