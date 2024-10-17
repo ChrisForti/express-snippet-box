@@ -8,20 +8,20 @@ const snippetRouter = Router();
 snippetRouter.post("/", createSnippet);
 // Function handler to create a new snippet
 async function createSnippet(req: Request, res: Response) {
-  const { title, content, expiration_date, userId } = req.body;
+  const { title, content, expirationDate, userId } = req.body;
   if (!title) {
     // data validation
     return res.status(400).json({ message: "title is missing." });
   }
   if (!userId) {
     // data validation
-    return res.status(400).json({ message: "user_id is missing." });
+    return res.status(400).json({ message: "userId is missing." });
   }
   if (isNaN(parseInt(userId))) {
     // data validation
-    return res.status(400).json({ message: "user_id must be a number" });
+    return res.status(400).json({ message: "userId must be a number" });
   }
-  if (expiration_date && isNaN(parseInt(expiration_date))) {
+  if (expirationDate && isNaN(parseInt(expirationDate))) {
     // data validation
     return res
       .status(400)
@@ -33,8 +33,8 @@ async function createSnippet(req: Request, res: Response) {
 
   try {
     await pool.query(
-      "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4)",
-      [title, expiration_date, userId, content]
+      "INSERT INTO snippets (title, expiration_date, user-id, content) VALUES ($1, $2, $3, $4)",
+      [title, expirationDate, userId, content]
     );
   } catch (error) {
     console.error("error creating snippet:", error);
@@ -42,7 +42,7 @@ async function createSnippet(req: Request, res: Response) {
   }
   if (error instanceof Error) {
     if ("code" in error && error.code) {
-      res.status(400).json({ message: "invalid user_id provided" });
+      res.status(400).json({ message: "invalid userId provided" });
     } else {
       res.status(500).json({ message: "failed to create snippet" });
     }
@@ -55,16 +55,16 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
   const { userId } = req.params;
   if (!userId) {
     // data validation
-    return res.status(400).json({ message: "user_id is missing" });
+    return res.status(400).json({ message: "userId is missing" });
   }
   if (!userId || isNaN(parseInt(userId))) {
     // data validation
-    return res.status(400).json({ message: "user_id must be a number" });
+    return res.status(400).json({ message: "userId must be a number" });
   }
 
   try {
     const snippet = await pool.query(
-      "SELECT * FROM snippets WHERE user_id = $1",
+      "SELECT * FROM snippets WHERE userId = $1",
       [userId]
     );
     res.json(snippet.rows);
@@ -73,7 +73,6 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
     res.status(500).json({ message: "failed to retrieve snippets" });
   }
 }
-// create handler to get a single snippet id
 
 snippetRouter.put("/:snippetId", updateSnippet);
 // Function handler to update a snippet
@@ -81,11 +80,11 @@ async function updateSnippet(req: Request, res: Response) {
   const { snippetId } = req.params;
   if (!snippetId) {
     // data validation
-    return res.status(400).json({ message: "snippet_id is missing" });
+    return res.status(400).json({ message: "snippetId is missing" });
   }
   if (isNaN(parseInt(snippetId))) {
     // data validation
-    return res.status(400).json({ message: "snippet_id must be a number" });
+    return res.status(400).json({ message: "snippetId must be a number" });
   }
 
   const { title, content, expiration_date } = req.body;
@@ -130,11 +129,11 @@ async function deleteSnippet(req: Request, res: Response) {
   const { snippetId } = req.body; // get snippetId
   if (!snippetId) {
     // data validation
-    return res.status(400).json({ message: "snippet_id is missing" });
+    return res.status(400).json({ message: "snippetId is missing" });
   }
   if (isNaN(parseInt(snippetId))) {
     // data validation
-    return res.status(400).json({ message: "snippet_id must be a number" });
+    return res.status(400).json({ message: "snippetId must be a number" });
   }
 
   try {
