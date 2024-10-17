@@ -10,18 +10,19 @@ async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password, emailVerified } = req.body;
   const emailRx =
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+  if (!email.match(emailRx)) {
+    return res.status(400).json({ message: "email format is invalid" });
+  }
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
-  } else if (!email.match(emailRx)) {
-    return res.status(400).json({ message: "email format is invalid" });
   }
   if (!firstName) {
     // data validation
-    return res.status(400).json({ message: "password is missing" });
+    return res.status(400).json({ message: "firstName is missing" });
   }
   if (!lastName) {
     // data validation
-    return res.status(400).json({ message: "password is missing" });
+    return res.status(400).json({ message: "lastName is missing" });
   }
   if (!password) {
     // data validation
@@ -29,7 +30,7 @@ async function createUser(req: Request, res: Response) {
   }
   if (!emailVerified) {
     // data validation
-    return res.status(400).json({ message: "email not verified" });
+    return res.status(400).json({ message: "email could not be verified" });
   }
 
   try {
