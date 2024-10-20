@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 const userRouter = Router();
 
 userRouter.post("/", createUser);
-// handler & route to create new user
+// Route handler to create a user
 async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
   const emailRx =
@@ -51,6 +51,7 @@ async function createUser(req: Request, res: Response) {
 }
 
 userRouter.post("/login", loginUser);
+// Route handler to login users
 async function loginUser(req: Request, res: Response) {
   const { email, password } = req.body;
   const emailRx =
