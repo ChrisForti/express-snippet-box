@@ -79,16 +79,20 @@ async function loginUser(req: Request, res: Response) {
       return res.status(404).json({ message: "user not found" });
     }
     const user = result.rows[0];
+    // use bcrypt.compare to verify password is correct
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(401).json({ message: "Incorrect password" });
+    }
     res.status(200).json({ message: "User retrieved successfully", user });
   } catch (error) {
     console.error("Error retrieving user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
-  // use bcrypt.compare to verify password is correct
   // create a stateful cookie to login user
-  // https://www.npmjs.com/package/bcrypt
 }
 
 export { userRouter };
 // create a user handler and validation conditionals for all not nulls in initialize.sql
 //email.match(emailRx) https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+// https://www.npmjs.com/package/bcrypt
