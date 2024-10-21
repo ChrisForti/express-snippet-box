@@ -133,11 +133,11 @@ async function deleteSnippet(req: Request, res: Response) {
   }
 
   try {
-    const deletedSnippet = await pool.query(
+    const deleteSnippet = await pool.query(
       "DELETE FROM snippets WHERE id = $1 RETURNING *",
       [snippetId]
     );
-    if (deletedSnippet.rows.length === 0) {
+    if (deleteSnippet.rows.length === 0) {
       res.status(404).json({ msg: "snippet not found" });
     } else {
       res.json({ msg: "snippet successfully deleted" });
