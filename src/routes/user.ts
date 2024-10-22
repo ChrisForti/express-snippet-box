@@ -91,10 +91,9 @@ async function loginUser(req: Request, res: Response) {
     // create a stateful cookie to login user
     res.cookie("user_id", user.id, { maxAge: 900000, httpOnly: true });
     res.status(200).json({ message: "User retrieved successfully", user });
-    res.status(200).json({ message: "User retrieved successfully", user });
   } catch (error) {
     console.error("Error retrieving user:", error);
-    res.status(500).json({ message: "server error" });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
