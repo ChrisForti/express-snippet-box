@@ -5,12 +5,22 @@ import bcrypt from "bcrypt";
 
 const userRouter = Router();
 
-userRouter.post("/", createUser);
 // Route handler to create a user
+userRouter.post("/", createUser);
+
+type userBodyParams = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+};
+
+const emailRx =
+  "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
 async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
-  const emailRx =
-    "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
   }
@@ -50,28 +60,37 @@ async function createUser(req: Request, res: Response) {
   }
 }
 
-userRouter.post("/login", loginUser);
 // Route handler to login users
+userRouter.post("/login", loginUser);
+
+type LoginUserVerification = {
+  email: string;
+  password: string;
+};
+
 async function loginUser(req: Request, res: Response) {
-  // get the users email and password from the body
   const { email, password } = req.body;
+
+  const emailRx =
+    "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
   }
-  if (!password) {
-    return res.status(400).json({ message: "password is missing" });
-  }
-  // validate email and password
-  const emailRx =
-    "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
   if (!email.match(emailRx)) {
     return res.status(400).json({ message: "email format is invalid" });
+  }
+
+  // validate email and password
+  if (!password) {
+    return res.status(400).json({ message: "password is missing" });
   }
   if (password.length < 8) {
     return res
       .status(400)
       .json({ message: "password must be at least 8 characters" });
   }
+
   // get user from database by email
   try {
     const getUserByEmail =
