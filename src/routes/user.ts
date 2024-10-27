@@ -6,9 +6,19 @@ import bcrypt from "bcrypt";
 const userRouter = Router();
 
 userRouter.post("/", createUser);
+
+type CreateUserBodyParams = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+};
+
 // Route handler to create a user
 async function createUser(req: Request, res: Response) {
-  const { email, firstName, lastName, password } = req.body;
+  const { email, firstName, lastName, password } =
+    req.body as CreateUserBodyParams;
+
   const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
 
@@ -27,10 +37,10 @@ async function createUser(req: Request, res: Response) {
   if (!password) {
     return res.status(400).json({ message: "password is missing" });
   }
-  if (password.Length < 8) {
+  if (password.length < 8 || password.length > 500) {
     return res
       .status(400)
-      .json({ message: "password must be at least 8 characters" });
+      .json({ message: "password must be between 8, and 500 characters" });
   }
 
   // create an object that does not include password to pass down
@@ -56,15 +66,21 @@ async function createUser(req: Request, res: Response) {
 }
 
 userRouter.post("/login", loginUser);
+
+type loginUserBodyParams = {
+  email: string;
+  password: string;
+};
+
 // Route handler to login users
 async function loginUser(req: Request, res: Response) {
   // get the users email and password from the body
-  const { email, password } = req.body;
+  const { email, password: passwordHash } = req.body as loginUserBodyParams;
 
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
   }
-  if (!password) {
+  if (!passwordHash) {
     return res.status(400).json({ message: "password is missing" });
   }
 
@@ -74,10 +90,10 @@ async function loginUser(req: Request, res: Response) {
   if (!email.match(emailRx)) {
     return res.status(400).json({ message: "email format is invalid" });
   }
-  if (password.length < 8) {
+  if (passwordHash.length < 8 || passwordHash.length > 500) {
     return res
       .status(400)
-      .json({ message: "password must be at least 8 characters" });
+      .json({ message: "password must be between 8, and 500 characters" });
   }
 
   // get user from database by email
@@ -92,8 +108,9 @@ async function loginUser(req: Request, res: Response) {
 
     // use bcrypt.compare to verify password is correct
     // https://www.npmjs.com/package/bcrypt
-    const passwordHash = await bcrypt.compare(password, user.password);
-    if (!passwordHash) {
+    const verifiedPassword = await bcrypt.compare(passwordHash, user.password);
+
+    if (!verifiedPassword) {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
