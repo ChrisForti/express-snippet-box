@@ -9,7 +9,7 @@ userRouter.post("/", createUser);
 // Route handler to create a user
 async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
-  const emailRx =
+  const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
@@ -66,7 +66,7 @@ async function loginUser(req: Request, res: Response) {
     return res.status(400).json({ message: "password is missing" });
   }
   // validate email and password
-  const emailRx =
+  const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
   if (!email.match(emailRx)) {
     return res.status(400).json({ message: "email format is invalid" });
@@ -87,6 +87,7 @@ async function loginUser(req: Request, res: Response) {
     const user = result.rows[0];
 
     // use bcrypt.compare to verify password is correct
+    // https://www.npmjs.com/package/bcrypt
     const passwordHash = await bcrypt.compare(password, user.password);
     if (!passwordHash) {
       return res.status(401).json({ message: "Incorrect password" });
@@ -106,4 +107,3 @@ async function loginUser(req: Request, res: Response) {
 export { userRouter };
 // create a user handler and validation conditionals for all not nulls in initialize.sql
 //email.match(emailRx) https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
-// https://www.npmjs.com/package/bcrypt
