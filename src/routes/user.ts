@@ -11,6 +11,7 @@ async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
   const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
   }
@@ -59,12 +60,14 @@ userRouter.post("/login", loginUser);
 async function loginUser(req: Request, res: Response) {
   // get the users email and password from the body
   const { email, password } = req.body;
+
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
   }
   if (!password) {
     return res.status(400).json({ message: "password is missing" });
   }
+
   // validate email and password
   const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
@@ -76,6 +79,7 @@ async function loginUser(req: Request, res: Response) {
       .status(400)
       .json({ message: "password must be at least 8 characters" });
   }
+
   // get user from database by email
   try {
     const getUserByEmail =
@@ -105,5 +109,3 @@ async function loginUser(req: Request, res: Response) {
 }
 
 export { userRouter };
-// create a user handler and validation conditionals for all not nulls in initialize.sql
-//email.match(emailRx) https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
