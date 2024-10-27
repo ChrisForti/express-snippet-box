@@ -18,15 +18,12 @@ async function createUser(req: Request, res: Response) {
     return res.status(400).json({ message: "email format is invalid" });
   }
   if (!firstName) {
-    // data validation
     return res.status(400).json({ message: "first name is missing" });
   }
   if (!lastName) {
-    // data validation
     return res.status(400).json({ message: "last name is missing" });
   }
   if (!password) {
-    // data validation
     return res.status(400).json({ message: "password is missing" });
   }
   if (password.Length < 8) {
@@ -35,14 +32,21 @@ async function createUser(req: Request, res: Response) {
       .json({ message: "password must be at least 8 characters" });
   }
 
+  // create an object that does not include password to pass down
   try {
     const passwordHash = await bcrypt.hash(password, 10);
+    if (passwordHash === null) {
+      throw new Error("something went wrong inserting password");
+    }
+
     // SQL prep for creating new user
     const newUser = await pool.query(
-      "INSERT INTO users(email, first_name, last_name, password, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [email, firstName, lastName, passwordHash, false]
+      "INSERT INTO users(email, first_name, last_name, passwordHash, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *"
     );
-    // create an object that does not include password to pass down
+    if (passwordHash === null) {
+      throw new Error("something went wrong inserting user");
+    }
+
     res.status(201).json(newUser.rows[0]);
   } catch (error) {
     console.error(error);
@@ -83,8 +87,8 @@ async function loginUser(req: Request, res: Response) {
     const user = result.rows[0];
 
     // use bcrypt.compare to verify password is correct
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
+    const passwordHash = await bcrypt.compare(password, user.password);
+    if (!passwordHash) {
       return res.status(401).json({ message: "Incorrect password" });
     }
 
