@@ -60,7 +60,8 @@ async function createUser(req: Request, res: Response) {
 
     // SQL prep for creating new user
     const newUser = await pool.query(
-      "INSERT INTO users(email, first_name, last_name, passwordHash, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *"
+      "INSERT INTO users(email, first_name, last_name, password, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [email, firstName, lastName, passwordHash, false]
     );
     if (passwordHash === null) {
       throw new Error("something went wrong inserting user");
