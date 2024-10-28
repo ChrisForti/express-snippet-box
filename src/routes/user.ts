@@ -107,8 +107,7 @@ async function loginUser(req: Request, res: Response) {
 
   // get user from database by email
   try {
-    const getUserByEmail =
-      "SELECT user_id, email, password FROM users WHERE email = $1";
+    const getUserByEmail = "SELECT * FROM users WHERE email = $1";
     const result = await pool.query(getUserByEmail, [email]);
     if (result.rows.length === 0) {
       return res.status(404).json({ message: "user not found" });

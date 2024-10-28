@@ -23,6 +23,6 @@ CREATE TABLE IF NOT EXISTS snippets(
 CREATE TABLE IF NOT EXISTS tokens(
   hash text primary key,
   user_id integer not null references users(id) ON DELETE CASCADE,
-  expiry integer not null, 
+  expiry integer not null 
 );
 
