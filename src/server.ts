@@ -15,9 +15,11 @@ app.get("/hello", (req, res) => {
 
 import { rootRouter } from "./routes/root.js";
 import { userRouter } from "./routes/user.js";
+import { snippetRouter } from "./routes/snippets.js";
 
 app.use("/", rootRouter);
-app.use("/user", userRouter);
+app.use("/users", userRouter);
+app.use("/snippets", snippetRouter);
 
 app.listen(PORT, () => {
   if (process.env.NODE_ENV === "development") {

@@ -2,6 +2,14 @@ import { Router } from "express";
 import { pool } from "../db/db.js";
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
+import { createHash, randomBytes } from "crypto";
+
+type TokenModel = {
+  plaintext: string;
+  hash: string;
+  expiry: number;
+  userId: number;
+};
 
 const userRouter = Router();
 
@@ -76,6 +84,7 @@ type loginUserBodyParams = {
 async function loginUser(req: Request, res: Response) {
   // get the users email and password from the body
   const { email, password: passwordHash } = req.body as loginUserBodyParams;
+  console.log(req.body);
 
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
@@ -111,18 +120,34 @@ async function loginUser(req: Request, res: Response) {
     const verifiedPassword = await bcrypt.compare(passwordHash, user.password);
 
     if (!verifiedPassword) {
-      return res.status(401).json({ message: "Incorrect password" });
+      return res.status(401).json({ message: "Credentials invalid" });
     }
 
-    // create a stateful cookie to login user
-    // (I used cookieparser)
-    // https://www.npmjs.com/package/cookieparser
-    res.cookie("user_id", user.id, { maxAge: 900000, httpOnly: true });
-    res.status(200).json({ message: "User retrieved successfully", user });
+    const plaintext = randomBytes(32).toString();
+    const hash = createHash("sha256").update(plaintext).digest("hex");
+    const expiry = Math.trunc(Date.now() / 1000) + 60 * 60 * 24 * 30;
+
+    const token: TokenModel = {
+      plaintext,
+      hash,
+      expiry,
+      userId: user.id,
+    };
+
+    const sql = "INSERT into tokens (hash, epiry, user_id)VALUES ($1, $2, $3)";
+    const params = [token.hash, token.expiry, token.userId];
+    await pool.query(sql, params);
+
+    res
+      .status(200)
+      .json({ message: "User retrieved successfully", token: token.plaintext });
   } catch (error) {
     console.error("Error retrieving user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
+// research middleware
+// https://www.usebruno.com/
+// MVC model view controller
 
 export { userRouter };
