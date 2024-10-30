@@ -15,13 +15,41 @@ export class Users {
     this.pool = pool;
   }
 
-  async createUser(name: string, email: string, password: string) {
+  async createUser(
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  ) {
     try {
+      // combine first and last into name? and validate
+      const name = { firstName, lastName };
+      if (!name) {
+        throw new Error("Invalid name");
+      }
+
+      // verify email
+      const emailRx =
+        "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+      if (!email) {
+        throw new Error("Invalid email");
+      }
+      if (!email.match(emailRx)) {
+        throw new Error("Invalid email format");
+      }
+
+      // verify password
       const passwordHash = await bcrypt.hash(password, 10);
       if (passwordHash === null) {
         throw new Error("something went wrong inserting password");
       }
+      if (passwordHash.length < 8 || passwordHash.length > 500) {
+        throw new Error(
+          "Invalid password format, must be between 8 and 500 characters"
+        );
+      }
 
+      // sql and params prep and verify
       const sql =
         "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, created_at";
       const params = [name, email, passwordHash];
