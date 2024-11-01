@@ -25,17 +25,17 @@ export class Users {
       // combine first and last into name? and validate
       const name = { firstName, lastName };
       if (!name) {
-        throw new Error("Invalid name");
+        throw new Error("invalid name");
       }
 
       // verify email
       const emailRx =
         "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
       if (!email) {
-        throw new Error("Invalid email");
+        throw new Error("invalid email");
       }
       if (!email.match(emailRx)) {
-        throw new Error("Invalid email format");
+        throw new Error("invalid email format");
       }
 
       // verify password
@@ -45,7 +45,7 @@ export class Users {
       }
       if (passwordHash.length < 8 || passwordHash.length > 500) {
         throw new Error(
-          "Invalid password format, must be between 8 and 500 characters"
+          "invalid password format, must be between 8 and 500 characters"
         );
       }
 
