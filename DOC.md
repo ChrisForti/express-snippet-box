@@ -22,3 +22,17 @@
 # curl command
 
 `curl -d '{"username": "Chris"}' -H "Content-Type: application/json" -X POST localhost:3000/user`
+
+## userModel suggestions from chad
+
+1. **Combine First Name and Last Name into a Single Name**: The code attempts to combine `firstName` and `lastName` into a `name` object. It's important to ensure that this combined data structure aligns with the database schema requirements.
+
+2. **Email Validation**: The regular expression used to validate the email may not cover all valid email formats. Consider using a more robust email validation technique.
+
+3. **Password Hashing**: The code correctly uses `bcrypt` to hash the password. Ensure that you handle any potential errors that may occur during the hashing process.
+
+4. **SQL Injection Prevention**: The current implementation of the SQL query is vulnerable to SQL injection as it directly inserts user data into the query. Consider using parameterized queries to prevent SQL injection attacks.
+
+5. **Error Handling**: The error handling in the `createUser` method could be improved. Instead of generic error messages, provide more specific information about what went wrong and handle errors more gracefully.
+
+6. **Return User Model**: When an error occurs during the user creation process, the method always throws a generic error message. It would be more informative to return `null` in this case and handle the error differently.
