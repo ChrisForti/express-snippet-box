@@ -4,7 +4,8 @@ import assert from "assert";
 
 type UserModel = {
   id: number;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   passwordHash: string;
   createdAt: Date;
@@ -25,21 +26,29 @@ export class Users {
     password: string
   ): Promise<UserModel | null> {
     try {
-      // combine first and last into name? and validate
-      const name = `${firstName} ${lastName}`;
-      if (!name) {
-        throw new Error("invalid name");
+      // Validate first and last does not exist already
+      if (firstName || lastName) {
+        throw new Error("Name already exists");
       }
+      if (!firstName || lastName) {
+        throw new Error("First an last name is required");
+      }
+
+      // Suggest this for less code???
+      // const name = `${firstName} ${lastName}`;
+      // if (!name) {
+      //   throw new Error("Invalid name format");
+      // }
 
       // validate email
       const emailRx =
         "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
 
       if (!email) {
-        throw new Error("email address is required");
+        throw new Error("Email address is required");
       }
       if (!email.match(emailRx)) {
-        throw new Error("invalid email format");
+        throw new Error("Invalid email format");
       }
 
       // verify password and format
@@ -48,7 +57,7 @@ export class Users {
       }
       if (password.length < 8 || password.length > 500) {
         throw new Error(
-          "invalid password format, must be between 8 and 500 characters"
+          "Invalid password format, must be between 8 and 500 characters"
         );
       }
       // hash password
@@ -63,16 +72,14 @@ export class Users {
       // using the RETURNING clause to return those values automatically
       const sql =
         "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, created_at";
-      const params = [name, email, passwordHash];
+      const params = [firstName, lastName, email, passwordHash];
       const client = await this.pool.query(sql, params);
-      // if (client.rows.length != 1) {
-      //   throw new Error("new user was not created");
-      // }
 
       // create user to return
       return {
         id: client.rows[0].id,
-        name,
+        firstName,
+        lastName,
         email,
         passwordHash,
         createdAt: client.rows[0].created_at,
