@@ -93,7 +93,6 @@ export class Users {
 
       if (client.rows.length != 1) {
         throw new Error("Failed to create a new user. See logs for details.");
-        return null;
       }
 
       const data = client.rows[0];
