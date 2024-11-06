@@ -89,4 +89,34 @@ export class Users {
       throw new Error("Failed to create a new user. See logs for details.");
     }
   }
+
+  // retreive user by email
+  async getUserByEmail(email: string): Promise<UserModel | null> {
+    try {
+      const sql = "SELECT password_hash FROM users WHERE email = $1";
+      const params = [email];
+      const client = await this.pool.query(sql, params);
+
+      if (client.rows.length != 1) {
+        throw new Error("Failed to create a new user. See logs for details.");
+        return null;
+      }
+
+      const data = client.rows[0];
+
+      const user: UserModel = {
+        id: data.id as number,
+        firstName: data.name as string,
+        lastName: data.name as string,
+        email: data.email as string,
+        passwordHash: data.password_hash.toString() as string,
+        createdAt: data.created_at as Date,
+      };
+
+      return user;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
 }
