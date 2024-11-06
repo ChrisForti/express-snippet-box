@@ -34,12 +34,6 @@ export class Users {
         throw new Error("First an last name is required");
       }
 
-      // Suggest this for less code???
-      // const name = `${firstName} ${lastName}`;
-      // if (!name) {
-      //   throw new Error("Invalid name format");
-      // }
-
       // validate email
       const emailRx =
         "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
@@ -112,6 +106,12 @@ export class Users {
         passwordHash: data.password_hash.toString() as string,
         createdAt: data.created_at as Date,
       };
+
+      // Suggest this for less code???
+      // const name = `${firstName} ${lastName}`;
+      // if (!name) {
+      //   throw new Error("Invalid name format");
+      // }
 
       return user;
     } catch (error) {
