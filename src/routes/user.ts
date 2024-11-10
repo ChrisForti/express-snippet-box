@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { pool } from "../db/db.js"; // I believe this needs to be {db} now
+import { db } from "../db/db.js";
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { createHash, randomBytes } from "crypto";
@@ -22,57 +23,76 @@ type CreateUserBodyParams = {
   password: string;
 };
 
-// Route handler to create a user
+// Route handler is now a controller to create a user
 async function createUser(req: Request, res: Response) {
-  const { email, firstName, lastName, password } =
-    req.body as CreateUserBodyParams;
+  const { email, firstName, lastName, password } = req.body;
 
-  const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
-    "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
-
-  if (!email) {
-    return res.status(400).json({ message: "email is missing" });
-  }
-  if (!email.match(emailRx)) {
-    return res.status(400).json({ message: "email format is invalid" });
-  }
-  if (!firstName) {
-    return res.status(400).json({ message: "first name is missing" });
-  }
-  if (!lastName) {
-    return res.status(400).json({ message: "last name is missing" });
-  }
-  if (!password) {
-    return res.status(400).json({ message: "password is missing" });
-  }
-  if (password.length < 8 || password.length > 500) {
-    return res
-      .status(400)
-      .json({ message: "password must be between 8, and 500 characters" });
-  }
-
-  // create an object that does not include password to pass down
   try {
-    const passwordHash = await bcrypt.hash(password, 10);
-    if (passwordHash === null) {
-      throw new Error("something went wrong inserting password");
-    }
-
-    // SQL prep for creating new user
-    const newUser = await pool.query(
-      "INSERT INTO users(email, first_name, last_name, password, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [email, firstName, lastName, passwordHash, false]
+    const newUser = await db.Models.Users.createUser(
+      email,
+      firstName,
+      lastName,
+      password
     );
-    if (passwordHash === null) {
-      throw new Error("something went wrong inserting user");
+    res.status(201).json(newUser); // successful creation of a newUser
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({ message: err.message });
+    } else {
+      res.status(500).json({ message: "Failed to create user" });
     }
-
-    res.status(201).json(newUser.rows[0]);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "new user was not created" });
   }
 }
+// async function createUser(req: Request, res: Response) {
+//   const { email, firstName, lastName, password } =
+//     req.body as CreateUserBodyParams;
+
+//   const emailRx = //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match
+//     "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+
+//   if (!email) {
+//     return res.status(400).json({ message: "email is missing" });
+//   }
+//   if (!email.match(emailRx)) {
+//     return res.status(400).json({ message: "email format is invalid" });
+//   }
+//   if (!firstName) {
+//     return res.status(400).json({ message: "first name is missing" });
+//   }
+//   if (!lastName) {
+//     return res.status(400).json({ message: "last name is missing" });
+//   }
+//   if (!password) {
+//     return res.status(400).json({ message: "password is missing" });
+//   }
+//   if (password.length < 8 || password.length > 500) {
+//     return res
+//       .status(400)
+//       .json({ message: "password must be between 8, and 500 characters" });
+//   }
+
+//   // create an object that does not include password to pass down
+//   try {
+//     const passwordHash = await bcrypt.hash(password, 10);
+//     if (passwordHash === null) {
+//       throw new Error("something went wrong inserting password");
+//     }
+
+//     // SQL prep for creating new user
+//     const newUser = await pool.query(
+//       "INSERT INTO users(email, first_name, last_name, password, email_verified) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+//       [email, firstName, lastName, passwordHash, false]
+//     );
+//     if (passwordHash === null) {
+//       throw new Error("something went wrong inserting user");
+//     }
+
+//     res.status(201).json(newUser.rows[0]);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "new user was not created" });
+//   }
+// }
 
 userRouter.post("/login", loginUser);
 
