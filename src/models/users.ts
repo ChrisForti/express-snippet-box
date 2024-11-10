@@ -33,6 +33,11 @@ export class Users {
       if (!firstName || lastName) {
         throw new Error("First an last name is required");
       }
+      // Suggest this for less code???
+      // const name = `${firstName} ${lastName}`;
+      // if (!name) {
+      //   throw new Error("Invalid name format");
+      // }
 
       // validate email
       const emailRx =
@@ -81,41 +86,7 @@ export class Users {
     } catch (error) {
       console.error("Error creating user:", error);
       throw new Error("Failed to create a new user. See logs for details.");
-    }
-  }
-
-  // retreive user by email
-  async getUserByEmail(email: string): Promise<UserModel | null> {
-    try {
-      const sql = "SELECT password_hash FROM users WHERE email = $1";
-      const params = [email];
-      const client = await this.pool.query(sql, params);
-
-      if (client.rows.length != 1) {
-        throw new Error("Failed to create a new user. See logs for details.");
-      }
-
-      const data = client.rows[0];
-
-      const user: UserModel = {
-        id: data.id as number,
-        firstName: data.name as string,
-        lastName: data.name as string,
-        email: data.email as string,
-        passwordHash: data.password_hash.toString() as string,
-        createdAt: data.created_at as Date,
-      };
-
-      // Suggest this for less code???
-      // const name = `${firstName} ${lastName}`;
-      // if (!name) {
-      //   throw new Error("Invalid name format");
-      // }
-
-      return user;
-    } catch (error) {
-      console.error(error);
-      return null;
+      // return null; I believe i need to return null due to the Promise????
     }
   }
 }

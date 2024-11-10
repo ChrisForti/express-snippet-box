@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { pool } from "../db/db.js";
+import { pool } from "../db/db.js"; // I believe this needs to be {db} now
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { createHash, randomBytes } from "crypto";
