@@ -26,11 +26,12 @@ export class Users {
     password: string
   ): Promise<UserModel | null> {
     try {
-      // Validate first and last does not exist already
       if (firstName || lastName) {
+        // validate that first and last does not exist already
         throw new Error("Name already exists");
       }
-      if (!firstName || lastName) {
+      if (!firstName || !lastName) {
+        // validate first and last are present
         throw new Error("First an last name is required");
       }
       // Suggest this for less code???
@@ -52,6 +53,7 @@ export class Users {
 
       // verify password and format
       if (password === null) {
+        // chad suggests undefined and ""??
         throw new Error("Invalid password. Password is required");
       }
       if (password.length < 8 || password.length > 500) {
@@ -85,8 +87,8 @@ export class Users {
       };
     } catch (error) {
       console.error("Error creating user:", error);
-      throw new Error("Failed to create a new user. See logs for details.");
-      // return null; I believe i need to return null due to the Promise????
+      // throw new Error("Failed to create a new user. See logs for details.");
+      return null;
     }
   }
 }

@@ -106,7 +106,6 @@ type loginUserBodyParams = {
 async function loginUser(req: Request, res: Response) {
   // get the users email and password from the body
   const { email, password: passwordHash } = req.body as loginUserBodyParams;
-  console.log(req.body);
 
   if (!email) {
     return res.status(400).json({ message: "email is missing" });
