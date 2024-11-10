@@ -23,9 +23,10 @@ type CreateUserBodyParams = {
   password: string;
 };
 
-// Route handler is now a controller to create a user
+// Route controller to create a user
 async function createUser(req: Request, res: Response) {
-  const { email, firstName, lastName, password } = req.body;
+  const { email, firstName, lastName, password } =
+    req.body as CreateUserBodyParams;
 
   try {
     const newUser = await db.Models.Users.createUser(
@@ -34,10 +35,10 @@ async function createUser(req: Request, res: Response) {
       lastName,
       password
     );
-    res.status(201).json(newUser); // successful creation of a newUser
+    res.status(201).json(newUser); // 201 = created newUser
   } catch (err) {
     if (err instanceof Error) {
-      res.status(400).json({ message: err.message });
+      res.status(400).json({ message: "Bad request" });
     } else {
       res.status(500).json({ message: "Failed to create user" });
     }

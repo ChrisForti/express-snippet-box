@@ -1,8 +1,8 @@
 import assert from "assert";
 import pg from "pg";
 import { Users } from "../models/users.js";
-const { Pool } = pg;
 
+const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
 assert(!!connectionString, "environment variable DATABASE_URL not set");
 
