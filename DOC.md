@@ -74,15 +74,3 @@ const client = await this.pool.query(sql, params);
     }
 
 }`
-
-## snippet to use pool instead od db
-
-` export const pool = new Pool({
-   connectionString,
- });
- pool.connect((err) => {
-   if (err) {
-     console.error(err);
-     throw new Error("Failed to connect to the database.");
-   }
-});`
