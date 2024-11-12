@@ -1,6 +1,7 @@
 import type pg from "pg";
 import bcrypt from "bcrypt";
 import assert from "assert";
+import { validateEmail, validateName, validatePassword } from "./validator.js";
 
 type UserModel = {
   id: number;
@@ -26,41 +27,12 @@ export class Users {
     password: string
   ): Promise<UserModel | null> {
     try {
-      if (firstName || lastName) {
-        // validate that first and last does not exist already
-        throw new Error("Name already exists");
-      }
-      if (!firstName || !lastName) {
-        // validate first and last are present
-        throw new Error("First an last name is required");
-      }
-      // Suggest this for less code???
-      // const name = `${firstName} ${lastName}`;
-      // if (!name) {
-      //   throw new Error("Invalid name format");
-      // }
+      validateName(firstName, lastName);
 
-      // validate email
-      const emailRx =
-        "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$";
+      validateEmail(email);
 
-      if (!email) {
-        throw new Error("Email address is required");
-      }
-      if (!email.match(emailRx)) {
-        throw new Error("Invalid email format");
-      }
+      validatePassword(password);
 
-      // verify password and format
-      if (password === null) {
-        // chad suggests undefined and ""??
-        throw new Error("Invalid password. Password is required");
-      }
-      if (password.length < 8 || password.length > 500) {
-        throw new Error(
-          "Invalid password format, must be between 8 and 500 characters"
-        );
-      }
       // hash password
       const passwordHash = await bcrypt.hash(password, 10);
 

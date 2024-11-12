@@ -3,8 +3,7 @@ import { pool } from "../db/db.js";
 import { db } from "../db/db.js";
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { createHash, randomBytes } from "crypto";
-import { validateEmail } from "../models/validator.js";
+import { validateEmail, validatePassword } from "../models/validator.js";
 
 const userRouter = Router();
 
@@ -51,19 +50,8 @@ async function loginUser(req: Request, res: Response) {
   // get the users email and password from the body
   const { email, password: passwordHash } = req.body as loginUserBodyParams;
 
-  if (!passwordHash) {
-    return res.status(400).json({ message: "password is missing" });
-  }
-
-  if (passwordHash.length < 8 || passwordHash.length > 500) {
-    return res
-      .status(400)
-      .json({ message: "password must be between 8, and 500 characters" });
-  }
-
   // get user from database by email
   try {
-    validateEmail(email);
     const getUserByEmail = "SELECT * FROM users WHERE email = $1";
     const result = await pool.query(getUserByEmail, [email]);
     if (result.rows.length === 0) {
@@ -71,8 +59,10 @@ async function loginUser(req: Request, res: Response) {
     }
     const user = result.rows[0];
 
-    // use bcrypt.compare to verify password is correct
-    // https://www.npmjs.com/package/bcrypt
+    validateEmail(email);
+
+    validatePassword(passwordHash);
+
     const verifiedPassword = await bcrypt.compare(passwordHash, user.password);
 
     if (!verifiedPassword) {
@@ -89,8 +79,8 @@ async function loginUser(req: Request, res: Response) {
     res.status(500).json({ message: "Internal server error" });
   }
 }
-// research middleware
-// https://www.usebruno.com/
-// MVC model view controller
 
 export { userRouter };
+
+// https://www.usebruno.com/
+// MVC model view controller
