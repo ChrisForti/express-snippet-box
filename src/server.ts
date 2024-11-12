@@ -13,9 +13,9 @@ app.get("/hello", (req, res) => {
   res.json({ serverMessage: "Hello world!" });
 });
 
-import { rootRouter } from "./routes/root.js";
-import { userRouter } from "./routes/user.js";
-import { snippetRouter } from "./routes/snippets.js";
+import { rootRouter } from "./controllers/root.js";
+import { userRouter } from "./controllers/user.js";
+import { snippetRouter } from "./controllers/snippets.js";
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);
