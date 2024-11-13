@@ -35,15 +35,13 @@ export class Users {
 
       // hash password
       const passwordHash = await bcrypt.hash(password, 10);
-
+      // check for a falsy password hash
       if (!passwordHash) {
-        // check for a falsy password hash
         throw new Error("Error hashing the password");
       }
 
       // sql and params prep and verify
-      // using the RETURNING clause to return those values automatically
-      const sql =
+      const sql = // RETURNING clause to return those values automatically
         "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, created_at";
       const params = [firstName, lastName, email, passwordHash];
       const client = await this.pool.query(sql, params);
@@ -59,7 +57,6 @@ export class Users {
       };
     } catch (error) {
       console.error("Error creating user:", error);
-      // throw new Error("Failed to create a new user. See logs for details.");
       return null;
     }
   }

@@ -8,6 +8,7 @@ const emailRx =
  * @throws {Error} if email is valid
  * */
 
+// All validation logic should only be what db cares about.
 export function validateEmail(email: string) {
   if (!email) {
     throw new Error("Email address is required");
@@ -18,6 +19,7 @@ export function validateEmail(email: string) {
 } // need to be wrapped in a try catch block when used
 
 export function validatePassword(password: string) {
+  // password validation logic here.
   if (password === null) {
     throw new Error("Invalid password. Password is required");
   }
@@ -27,8 +29,6 @@ export function validatePassword(password: string) {
   if (password.length < 8 || password.length > 500) {
     throw new Error("password must be between 8, and 500 characters");
   }
-  // password logic here, and all other validators to be turned into methods.
-  // the password logic should only be what db cares about.
 }
 
 export function validateName(firstName: string, lastName: string) {
@@ -37,7 +37,7 @@ export function validateName(firstName: string, lastName: string) {
     throw new Error("Name already exists");
   }
   if (!firstName || !lastName) {
-    // validate first and last are present
+    // first and last are present
     throw new Error("First an last name is required");
   }
 }
