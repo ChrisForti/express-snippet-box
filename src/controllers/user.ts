@@ -45,12 +45,11 @@ type loginUserBodyParams = {
   password: string;
 };
 
-// Route handler to login users
+// Route controller to login users
 async function loginUser(req: Request, res: Response) {
-  // get the users email and password from the body
   const { email, password: passwordHash } = req.body as loginUserBodyParams;
 
-  // get user from database by email
+  // get user from database by email should now be the same pattern as above
   try {
     const getUserByEmail = "SELECT * FROM users WHERE email = $1";
     const result = await pool.query(getUserByEmail, [email]);
