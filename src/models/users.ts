@@ -16,7 +16,7 @@ export class Users {
   private pool: pg.Pool;
 
   constructor(pool: pg.Pool) {
-    assert(!!pool, "Database connection pool is required"); // validates pool object and stops function if not right
+    assert(!!pool, "Database connection is required");
     this.pool = pool;
   }
 
@@ -33,9 +33,8 @@ export class Users {
 
       validatePassword(password);
 
-      // hash password
+      // hash password then check for a falsy password hash
       const passwordHash = await bcrypt.hash(password, 10);
-      // check for a falsy password hash
       if (!passwordHash) {
         throw new Error("Error hashing the password");
       }
