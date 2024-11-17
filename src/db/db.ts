@@ -1,7 +1,7 @@
 import assert from "assert";
 import pg from "pg";
-import { Users } from "../models/users.js";
-import { Tokens } from "../models/tokens.js";
+import { Users } from "../models/user-model.js";
+import { Tokens } from "../models/token-model.js";
 
 const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
