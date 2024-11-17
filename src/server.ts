@@ -1,5 +1,4 @@
 import express from "express";
-import { pool } from "./db/db.js";
 
 //create express app
 const app = express();

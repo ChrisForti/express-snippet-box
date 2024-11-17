@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { pool } from "../db/db.js";
 import { db } from "../db/db.js";
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
@@ -47,22 +46,17 @@ type loginUserBodyParams = {
 
 // Route controller to login users
 async function loginUser(req: Request, res: Response) {
-  const { email, password: passwordHash } = req.body as loginUserBodyParams;
+  const { email, password } = req.body as loginUserBodyParams;
 
   // get user from database by email should now be the same pattern as above
   try {
-    const getUserByEmail = "SELECT * FROM users WHERE email = $1";
-    const result = await pool.query(getUserByEmail, [email]);
-    if (result.rows.length === 0) {
-      return res.status(404).json({ message: "user not found" });
-    }
-    const user = result.rows[0];
-
     validateEmail(email);
 
-    validatePassword(passwordHash);
+    validatePassword(password);
 
-    const verifiedPassword = await bcrypt.compare(passwordHash, user.password);
+    const user = await db.Models.Users.getUserByEmail(email);
+
+    const verifiedPassword = await bcrypt.compare(password, user.passwordHash);
 
     if (!verifiedPassword) {
       return res.status(401).json({ message: "Credentials invalid" });

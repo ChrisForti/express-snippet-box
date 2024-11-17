@@ -25,7 +25,7 @@ export class Users {
     lastName: string,
     email: string,
     password: string
-  ): Promise<UserModel | null> {
+  ) {
     try {
       validateName(firstName, lastName);
 
@@ -51,12 +51,19 @@ export class Users {
         firstName,
         lastName,
         email,
-        passwordHash,
-        createdAt: client.rows[0].created_at,
       };
     } catch (error) {
       console.error("Error creating user:", error);
       return null;
     }
+  }
+  async getUserByEmail(email: string) {
+    const sql = "SELECT * FROM users WHERE email = $1";
+    const result = await this.pool.query(sql, [email]);
+    if (result.rows.length === 0) {
+      throw new Error("user not found");
+    }
+    const user = result.rows[0] as UserModel;
+    return user;
   }
 }

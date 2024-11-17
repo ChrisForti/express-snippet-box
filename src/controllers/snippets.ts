@@ -2,10 +2,11 @@ import { error } from "console";
 import { pool } from "../db/db.js";
 import { Router } from "express";
 import type { Request, Response } from "express";
+import { ensureAuthenticated } from "./auth.js";
 
 const snippetRouter = Router();
 
-snippetRouter.post("/", createSnippet);
+snippetRouter.post("/", ensureAuthenticated, createSnippet);
 // Function handler to create a new snippet
 async function createSnippet(req: Request, res: Response) {
   const { title, content, expirationDate, userId } = req.body;
@@ -74,7 +75,7 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
   }
 }
 
-snippetRouter.put("/:snippetId", updateSnippet);
+snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
 // Function handler to update a snippet
 async function updateSnippet(req: Request, res: Response) {
   const { snippetId } = req.params;
@@ -123,7 +124,7 @@ async function updateSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.delete("/:snippetId", deleteSnippet);
+snippetRouter.delete("/:snippetId", ensureAuthenticated, deleteSnippet);
 // Function to delete a snippet
 async function deleteSnippet(req: Request, res: Response) {
   const { snippetId } = req.body; // get snippetId
