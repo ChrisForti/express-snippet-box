@@ -38,3 +38,35 @@ export function validateName(firstName: string, lastName: string) {
     throw new Error("First and last shoud be a minimum of three characters");
   }
 }
+
+export function validateTitle(title: string) {
+  if (!title) {
+    // data validation
+    throw new Error("Title is missing");
+  }
+}
+
+export function validateUserId(userId: string) {
+  if (!userId) {
+    // data validation
+    throw new Error("user id is missing");
+  }
+  if (isNaN(parseInt(userId))) {
+    // data validation
+    throw new Error("user id must be a number");
+  }
+}
+
+export function validateContent(content: string) {
+  if (!content) {
+    // data validation
+    throw new Error("content is missing");
+  }
+}
+
+export function validateExperationDate(expirationDate: number) {
+  if (!expirationDate) {
+    // data validation
+    throw new Error("expiration date is missing");
+  }
+}

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { db } from "../db/db.js";
 import type { Request, Response } from "express";
 import bcrypt from "bcrypt";
-import { validateEmail, validatePassword } from "../models/validator.js";
+import { validateEmail, validatePassword } from "../models/validators.js";
 
 const userRouter = Router();
 

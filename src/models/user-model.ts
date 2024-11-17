@@ -1,7 +1,7 @@
 import type pg from "pg";
 import bcrypt from "bcrypt";
 import assert from "assert";
-import { validateEmail, validateName, validatePassword } from "./validator.js";
+import { validateEmail, validateName, validatePassword } from "./validators.js";
 
 type UserModel = {
   id: number;

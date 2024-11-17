@@ -13,8 +13,8 @@ app.get("/hello", (req, res) => {
 });
 
 import { rootRouter } from "./controllers/root.js";
-import { userRouter } from "./controllers/user.js";
-import { snippetRouter } from "./controllers/snippets.js";
+import { userRouter } from "./controllers/user-controller.js";
+import { snippetRouter } from "./controllers/snippet-controller.js";
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);
