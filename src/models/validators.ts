@@ -46,15 +46,15 @@ export function validateTitle(title: string) {
   }
 }
 
-export function validateUserId(userId: string) {
+export function validateUserId(userId: number) {
   if (!userId) {
     // data validation
     throw new Error("user id is missing");
   }
-  if (isNaN(parseInt(userId))) {
-    // data validation
-    throw new Error("user id must be a number");
-  }
+  // if (isNaN(parseInt(userId))) {
+  //   // data validation
+  //   throw new Error("user id must be a number");
+  // }
 }
 
 export function validateContent(content: string) {
@@ -64,8 +64,8 @@ export function validateContent(content: string) {
   }
 }
 
-export function validateExperationDate(expirationDate: number) {
-  if (!expirationDate) {
+export function validateExperationDate(expirationDate: string) {
+  if (expirationDate && isNaN(parseInt(expirationDate))) {
     // data validation
     throw new Error("expiration date is missing");
   }
