@@ -6,6 +6,7 @@ import { ensureAuthenticated } from "./auth.js";
 import {
   validateContent,
   validateExperationDate,
+  validateSnippetId,
   validateTitle,
   validateUserId,
 } from "../models/validators.js";
@@ -142,16 +143,10 @@ snippetRouter.delete("/:snippetId", ensureAuthenticated, deleteSnippet);
 // Function to delete a snippet
 async function deleteSnippet(req: Request, res: Response) {
   const { snippetId } = req.body; // get snippetId
-  if (!snippetId) {
-    // data validation
-    return res.status(400).json({ message: "snippet id is missing" });
-  }
-  if (isNaN(parseInt(snippetId))) {
-    // data validation
-    return res.status(400).json({ message: "snippet id must be a number" });
-  }
 
   try {
+    validateSnippetId(snippetId);
+
     const deleteSnippet = await pool.query(
       "DELETE FROM snippets WHERE id = $1 RETURNING *",
       [snippetId]

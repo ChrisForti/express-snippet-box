@@ -10,7 +10,7 @@ import {
 type SnippetModel = {
   tile: string;
   content: string;
-  expirationDate: string;
+  expirationDate: number;
   userId: number;
   snippetId: number;
 };
@@ -26,14 +26,28 @@ export class snippet {
     title: string,
     content: string,
     expirationDate: string,
-    userId: number
+    userId: string
   ) {
     try {
       validateTitle(title);
+
       validateContent(content);
+
       validateExperationDate(expirationDate);
+
       validateUserId(userId);
-    } catch (error) {}
+
+      const sql =
+        "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4)";
+      const params = [title, content, expirationDate, userId];
+      const client = await this.pool.query(sql, params);
+
+      return {
+        content,
+      };
+    } catch (error) {
+      throw new Error("Error creating snippet");
+    }
   }
 }
 
