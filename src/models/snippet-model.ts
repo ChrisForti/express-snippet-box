@@ -15,7 +15,7 @@ type SnippetModel = {
   snippetId: number;
 };
 
-export class snippet {
+export class Snippets {
   private pool: pg.Pool;
 
   constructor(pool: pg.Pool) {
@@ -40,9 +40,12 @@ export class snippet {
       const sql =
         "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4)";
       const params = [title, content, expirationDate, userId];
-      const client = await this.pool.query(sql, params);
+      const newSnippet = await this.pool.query(sql, params);
 
       return {
+        title,
+        expirationDate,
+        userId,
         content,
       };
     } catch (error) {
