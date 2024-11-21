@@ -1,5 +1,5 @@
 import { error } from "console";
-import { pool } from "../db/db.js";
+import { db, pool } from "../db/db.js";
 import { Router } from "express";
 import type { Request, Response } from "express";
 import { ensureAuthenticated } from "./auth.js";
@@ -13,33 +13,28 @@ import {
 
 const snippetRouter = Router();
 
+type SnippetControllerBodyParams = {
+  title: string;
+  content: string;
+  expirationDate: string;
+  userId: string;
+  snippetId: string;
+};
+
 snippetRouter.post("/", ensureAuthenticated, createSnippet);
-// Function handler to create a new snippet
+// Function controller to create a new snippet
 async function createSnippet(req: Request, res: Response) {
-  const { title, content, expirationDate, userId } = req.body;
-  // if (!title) {
-  //   // data validation
-  //   return res.status(400).json({ message: "title is missing." });
-  // }
-  // if (!userId) {
-  //   // data validation
-  //   return res.status(400).json({ message: "user id is missing." });
-  // }
-  // if (isNaN(parseInt(userId))) {
-  //   // data validation
-  //   return res.status(400).json({ message: "user id must be a number" });
-  // }
-  // if (expirationDate && isNaN(parseInt(expirationDate))) {
-  //   // data validation
-  //   return res
-  //     .status(400)
-  //     .json({ message: "experation_date must be a number" });
-  // }
-  // if (!content) {
-  //   return res.status(400).json({ message: "content is missing." });
-  // }
+  const { title, content, expirationDate, userId } =
+    req.body as SnippetControllerBodyParams;
 
   try {
+    const plaintext = await db.Models.Snippets.createSnippet(
+      title,
+      content,
+      expirationDate,
+      userId
+    );
+
     validateTitle(title);
 
     validateUserId(userId);
@@ -47,11 +42,6 @@ async function createSnippet(req: Request, res: Response) {
     validateExperationDate(expirationDate);
 
     validateContent(content);
-
-    // await pool.query(
-    //   "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4)",
-    //   [title, expirationDate, userId, content]
-    // );
   } catch (error) {
     console.error("error creating snippet:", error);
     throw error;
@@ -66,19 +56,13 @@ async function createSnippet(req: Request, res: Response) {
 }
 
 snippetRouter.get("/all/:userId", getAllSnippetsByUserId);
-// Function handler to read/get a snippet
+// Function controller to read/get a snippet
 async function getAllSnippetsByUserId(req: Request, res: Response) {
-  const { userId } = req.params;
-  if (!userId) {
-    // data validation
-    return res.status(400).json({ message: "user id is missing" });
-  }
-  if (!userId || isNaN(parseInt(userId))) {
-    // data validation
-    return res.status(400).json({ message: "user id must be a number" });
-  }
+  const { userId } = req.params as SnippetControllerBodyParams;
 
   try {
+    validateUserId(userId);
+
     const snippet = await pool.query(
       "SELECT * FROM snippets WHERE userId = $1",
       [userId]
@@ -91,27 +75,18 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
 }
 
 snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
-// Function handler to update a snippet
+// Function controller to update a snippet
 async function updateSnippet(req: Request, res: Response) {
-  const { snippetId } = req.params;
-  if (!snippetId) {
-    // data validation
-    return res.status(400).json({ message: "snippet id is missing" });
-  }
-  if (isNaN(parseInt(snippetId))) {
-    // data validation
-    return res.status(400).json({ message: "snippet id must be a number" });
-  }
+  const { snippetId } = req.params as SnippetControllerBodyParams;
 
-  const { title, content, expiration_date } = req.body;
-  if (expiration_date && isNaN(parseInt(expiration_date))) {
-    // data validation
-    return res
-      .status(400)
-      .json({ message: "expiration_date must be a number" });
-  }
+  const { title, content, expirationDate } =
+    req.body as SnippetControllerBodyParams;
 
   try {
+    validateSnippetId(snippetId);
+
+    validateExperationDate(expirationDate);
+
     const snippet = (
       await pool.query("select from snippets where id = $1", [snippetId])
     ).rows[0];
@@ -123,7 +98,7 @@ async function updateSnippet(req: Request, res: Response) {
     const args = [
       title ?? snippet.title,
       content ?? snippet.content,
-      expiration_date ?? snippet.expiration_date,
+      expirationDate ?? snippet.expiration_date,
       snippetId,
     ];
     const result = await pool.query(sql, args);
