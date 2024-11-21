@@ -2,6 +2,7 @@ import assert from "assert";
 import pg from "pg";
 import { Users } from "../models/user-model.js";
 import { Tokens } from "../models/token-model.js";
+import { Snippets } from "../models/snippet-model.js";
 
 const { Pool } = pg;
 const connectionString = process.env.DATABASE_URL;
@@ -13,5 +14,6 @@ export const db = {
   Models: {
     Tokens: new Tokens(pool),
     Users: new Users(pool),
+    Snippets: new Snippets(pool),
   },
 };
