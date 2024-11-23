@@ -45,13 +45,38 @@ export class Snippets {
       return {
         title,
         expirationDate,
-        userId,
+        userId: newSnippet.rows[0].userId,
         content,
       };
     } catch (error) {
       throw new Error("Error creating snippet");
     }
   }
+  async getAllSnippetsByUserId(userId: string) {
+    const sql = "SELECT * FROM snippets WHERE userId = $1";
+    const result = await this.pool.query(sql, [userId]);
+    if (result.rows.length === 0) {
+      throw new Error("user id not found");
+    }
+    const snippets = result.rows[0] as SnippetModel;
+    return snippets;
+  }
+
+async deleteSnippetBySnippetId (snippetId: string){
+  const sql = "DELETE FROM snippets WHERE id = $1 RETURNING *"
+  const result = await this.pool.query(sql, [snippetId])
+  
+  try {  
+if (result.rows.length === 0) {
+  throw new Error("snippet not found")
+} else {
+  return "Snippet deleted successfully"
 }
+} catch (error) {
+  throw new Error("error deleteing specified snippet")
+  }
+}
+
+
 
 // Create a model here like the other models.
