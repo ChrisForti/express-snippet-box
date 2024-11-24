@@ -1,15 +1,7 @@
-import { error } from "console";
 import { db, pool } from "../db/db.js";
 import { Router } from "express";
 import type { Request, Response } from "express";
 import { ensureAuthenticated } from "./auth.js";
-import {
-  validateContent,
-  validateExperationDate,
-  validateSnippetId,
-  validateTitle,
-  validateUserId,
-} from "../models/validators.js";
 
 const snippetRouter = Router();
 
@@ -32,25 +24,16 @@ async function createSnippet(req: Request, res: Response) {
       title,
       content,
       expirationDate,
-      userId
+      parseInt(userId)
     );
-
-    validateTitle(title);
-
-    validateUserId(userId);
-
-    validateExperationDate(expirationDate);
-
-    validateContent(content);
   } catch (error) {
     console.error("error creating snippet:", error);
-    throw error;
-  }
-  if (error instanceof Error) {
-    if ("code" in error && error.code) {
-      res.status(400).json({ message: "invalid user id" });
-    } else {
-      res.status(500).json({ message: "failed to create snippet" });
+    if (error instanceof Error) {
+      if ("code" in error && error.code) {
+        res.status(400).json({ message: "invalid user id" });
+      } else {
+        res.status(500).json({ message: "failed to create snippet" });
+      }
     }
   }
 }
@@ -61,8 +44,6 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
   const { userId } = req.params as SnippetControllerBodyParams;
 
   try {
-    validateUserId(userId);
-
     const snippet = await pool.query(
       "SELECT * FROM snippets WHERE userId = $1",
       [userId]
@@ -83,10 +64,6 @@ async function updateSnippet(req: Request, res: Response) {
     req.body as SnippetControllerBodyParams;
 
   try {
-    validateSnippetId(snippetId);
-
-    validateExperationDate(expirationDate);
-
     const snippet = (
       await pool.query("select from snippets where id = $1", [snippetId])
     ).rows[0];
@@ -120,13 +97,11 @@ async function deleteSnippet(req: Request, res: Response) {
   const { snippetId } = req.body; // get snippetId
 
   try {
-    validateSnippetId(snippetId);
-
-    const deleteSnippet = await pool.query(
-      "DELETE FROM snippets WHERE id = $1 RETURNING *",
-      [snippetId]
+    const deleteSnippet = await db.Models.Snippets.deleteSnippetBySnippetId(
+      snippetId
     );
-    if (deleteSnippet.rows.length === 0) {
+
+    if (!deleteSnippet) {
       res.status(404).json({ message: "snippet not found" });
     } else {
       res.json({ message: "snippet successfully deleted" });
