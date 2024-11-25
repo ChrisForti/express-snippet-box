@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users(
 
 
 CREATE TABLE IF NOT EXISTS snippets(
-  snippet_id varchar(255) PRIMARY KEY
+   snippet_id varchar(255) PRIMARY KEY
     -- snippet_id SERIAL PRIMARY KEY (Auto-increment),
     title varchar(255) not null,
     -- creation_date integer default extract (epoch from now()) not null,
