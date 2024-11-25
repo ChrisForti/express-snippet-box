@@ -3,8 +3,8 @@ import assert from "assert";
 import {
   validateContent,
   validateExperationDate,
+  validateId,
   validateTitle,
-  validateUserId,
 } from "./validators.js";
 
 type SnippetModel = {
@@ -26,7 +26,7 @@ export class Snippets {
     title: string,
     content: string,
     expirationDate: string,
-    userId: string
+    userId: number
   ) {
     try {
       validateTitle(title);
@@ -35,48 +35,73 @@ export class Snippets {
 
       validateExperationDate(expirationDate);
 
-      validateUserId(userId);
+      validateId(userId);
 
       const sql =
-        "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4)";
-      const params = [title, content, expirationDate, userId];
+        "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4) RETURNING id";
+      const params = [title, expirationDate, userId, content];
       const newSnippet = await this.pool.query(sql, params);
 
       return {
+        id: newSnippet.rows[0].id,
         title,
         expirationDate,
-        userId: newSnippet.rows[0].userId,
+        userId,
         content,
       };
     } catch (error) {
-      throw new Error("Error creating snippet");
+      console.error(error);
+      return null;
     }
   }
-  async getAllSnippetsByUserId(userId: string) {
-    const sql = "SELECT * FROM snippets WHERE userId = $1";
-    const result = await this.pool.query(sql, [userId]);
-    if (result.rows.length === 0) {
-      throw new Error("user id not found");
+
+  // needs a get by snippet id, and update. refactor my snippetid to a string, because of uuid.
+  // Also only have validators in my model
+  async getSnippetById(snippetId: number) {
+    try {
+      validateId(snippetId);
+
+      const sql = "SELECT * FROM snippets WHERE snippet_id = $1";
+      const result = await this.pool.query(sql, [snippetId]);
+
+      return result.rows[0];
+    } catch (error) {
+      console.error(error);
+      return [];
     }
-    const snippets = result.rows[0] as SnippetModel;
-    return snippets;
   }
 
-async deleteSnippetBySnippetId (snippetId: string){
-  const sql = "DELETE FROM snippets WHERE id = $1 RETURNING *"
-  const result = await this.pool.query(sql, [snippetId])
-  
-  try {  
-if (result.rows.length === 0) {
-  throw new Error("snippet not found")
-} else {
-  return "Snippet deleted successfully"
-}
-} catch (error) {
-  throw new Error("error deleteing specified snippet")
+  async getAllSnippetsByUserId(userId: number) {
+    try {
+      validateId(userId);
+
+      const sql = "SELECT * FROM snippets WHERE user_id = $1";
+
+      const result = await this.pool.query(sql, [userId]);
+
+      return result.rows;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  }
+
+  async deleteSnippetBySnippetId(snippetId: number) {
+    const sql = "DELETE FROM snippets WHERE id = $1";
+
+    try {
+      validateId(snippetId);
+      const result = await this.pool.query(sql, [snippetId]);
+      if (result.rowCount === 0) {
+        return false;
+      } else {
+        return true;
+      }
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
   }
 }
-
-
 
 // Create a model here like the other models.
