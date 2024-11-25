@@ -53,13 +53,11 @@ export function validateContent(content: string) {
   }
 }
 
-export function validateUserId(userId: string) {
-  if (!userId) {
-    // data validation
+export function validateId(id: number) {
+  if (!id) {
     throw new Error("user id is missing");
   }
-  if (userId && isNaN(parseInt(userId))) {
-    // data validation
+  if (!Number.isInteger(id) || id < 1) {
     throw new Error("user id must be a number");
   }
 }
@@ -70,16 +68,5 @@ export function validateExperationDate(expirationDate: string) {
   }
   if (expirationDate && isNaN(parseInt(expirationDate))) {
     throw new Error("expiration date is missing");
-  }
-}
-
-export function validateSnippetId(snippetId: string) {
-  if (!snippetId) {
-    // data validation
-    throw new Error("Snippet id is missing");
-  }
-  if (snippetId && isNaN(parseInt(snippetId))) {
-    // data validation
-    throw new Error("snippet id must be a number");
   }
 }
