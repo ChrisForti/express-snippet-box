@@ -62,6 +62,7 @@ export class Snippets {
       validateId(snippetId);
 
       const sql = "SELECT * FROM snippets WHERE snippet_id = $1";
+
       const result = await this.pool.query(sql, [snippetId]);
 
       return result.rows[0];
@@ -83,6 +84,41 @@ export class Snippets {
     } catch (error) {
       console.error(error);
       return [];
+    }
+  }
+
+  async updateSnippet(
+    snippetId: number,
+    title: string,
+    content: string,
+    expirationDate: string
+  ) {
+    try {
+      validateId(snippetId);
+
+      const snippet = (
+        await this.pool.query("select from snippets where id = $1", [snippetId])
+      ).rows[0];
+      const sql = `
+      UPDATE snippets
+      SET title = $1, content = $2, expiration_date = $3
+      WHERE snippetId = $4
+      `;
+      const args = [
+        title ?? snippet.title,
+        content ?? snippet.content,
+        expirationDate ?? snippet.expiration_date,
+        snippetId,
+      ];
+      const result = await this.pool.query(sql, args);
+      if (result.rows.length === 0) {
+        console.error("Snippet not found");
+      } else {
+        return result.rows[0];
+      }
+    } catch (error) {
+      console.error(error);
+      return "snippet title updated successfully";
     }
   }
 
