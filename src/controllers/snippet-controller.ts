@@ -38,6 +38,23 @@ async function createSnippet(req: Request, res: Response) {
   }
 }
 
+snippetRouter.get("/all/:userId", getBySnippetId);
+// Function controller to read/get a snippet
+async function getBySnippetId(req: Request, res: Response) {
+  const { snippetId } = req.params as SnippetControllerBodyParams;
+
+  try {
+    const snippet = await pool.query(
+      "SELECT * FROM snippets WHERE userId = $1",
+      [snippetId]
+    );
+    res.json(snippet.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "failed to retrieve snippets" });
+  }
+}
+
 snippetRouter.get("/all/:userId", getAllSnippetsByUserId);
 // Function controller to read/get a snippet
 async function getAllSnippetsByUserId(req: Request, res: Response) {
@@ -64,27 +81,15 @@ async function updateSnippet(req: Request, res: Response) {
     req.body as SnippetControllerBodyParams;
 
   try {
-    const snippet = (
-      await pool.query("select from snippets where id = $1", [snippetId])
-    ).rows[0];
-    const sql = `
-    UPDATE snippets
-    SET title = $1, content = $2, expiration_date = $3
-    WHERE snippetId = $4
-    `;
-    const args = [
-      title ?? snippet.title,
-      content ?? snippet.content,
-      expirationDate ?? snippet.expiration_date,
-      snippetId,
-    ];
-    const result = await pool.query(sql, args);
-    if (result.rows.length === 0) {
-      res.status(404).json({ message: "snippet not found" });
-    } else {
-      res.json(result.rows[0]);
-    }
-    res.status(200).send("snippet title updated successfully");
+    const updateSnippet = await db.Models.Snippets.updateSnippet(
+      parseInt(snippetId),
+      title,
+      content,
+      expirationDate
+    );
+
+    res.json(updateSnippet.rows);
+    res.status(200).send("snippet updated successfully");
   } catch (error) {
     console.error("error updating snippet:", error);
     res.status(500).send("failed to update snippet");

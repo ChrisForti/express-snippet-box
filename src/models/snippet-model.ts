@@ -96,29 +96,36 @@ export class Snippets {
     try {
       validateId(snippetId);
 
-      const snippet = (
-        await this.pool.query("select from snippets where id = $1", [snippetId])
-      ).rows[0];
+      // Retrieve the existing snippet to get default field values if needed
+      const snippetQuery = `
+      SELECT title, content, expiration_date 
+      FROM snippets 
+      WHERE snippet_id = $1`;
+
+      // Then process the query plus any default field values
+      const snippet = (await this.pool.query(snippetQuery, [snippetId]))
+        .rows[0];
       const sql = `
       UPDATE snippets
       SET title = $1, content = $2, expiration_date = $3
-      WHERE snippetId = $4
-      `;
+      WHERE snippet_id = $4`;
+
       const args = [
+        snippetId,
         title ?? snippet.title,
         content ?? snippet.content,
         expirationDate ?? snippet.expiration_date,
-        snippetId,
       ];
-      const result = await this.pool.query(sql, args);
-      if (result.rows.length === 0) {
+
+      const updateResult = await this.pool.query(sql, args);
+      if (updateResult.rows.length === 0) {
         console.error("Snippet not found");
       } else {
-        return result.rows[0];
+        return updateResult.rows[0];
       }
     } catch (error) {
       console.error(error);
-      return "snippet title updated successfully";
+      return "snippet updated successfully";
     }
   }
 
@@ -139,5 +146,3 @@ export class Snippets {
     }
   }
 }
-
-// Create a model here like the other models.
