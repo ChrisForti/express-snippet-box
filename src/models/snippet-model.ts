@@ -55,8 +55,6 @@ export class Snippets {
     }
   }
 
-  // needs a get by snippet id, and update. refactor my snippetid to a string, because of uuid.
-  // Also only have validators in my model
   async getSnippetById(snippetId: number) {
     try {
       validateId(snippetId);

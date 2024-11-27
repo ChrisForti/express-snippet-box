@@ -38,15 +38,14 @@ async function createSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/all/:userId", getBySnippetId);
+snippetRouter.get("/all/:userId", ensureAuthenticated, getBySnippetId);
 // Function controller to read/get a snippet
 async function getBySnippetId(req: Request, res: Response) {
   const { snippetId } = req.params as SnippetControllerBodyParams;
 
   try {
-    const snippet = await pool.query(
-      "SELECT * FROM snippets WHERE userId = $1",
-      [snippetId]
+    const snippet = await db.Models.Snippets.getSnippetById(
+      parseInt(snippetId)
     );
     res.json(snippet.rows);
   } catch (error) {
@@ -55,17 +54,15 @@ async function getBySnippetId(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/all/:userId", getAllSnippetsByUserId);
+snippetRouter.get("/all/:userId", ensureAuthenticated, getAllSnippetsByUserId);
 // Function controller to read/get a snippet
 async function getAllSnippetsByUserId(req: Request, res: Response) {
   const { userId } = req.params as SnippetControllerBodyParams;
 
   try {
-    const snippet = await pool.query(
-      "SELECT * FROM snippets WHERE userId = $1",
-      [userId]
+    const snippet = await db.Models.Snippets.getAllSnippetsByUserId(
+      parseInt(userId)
     );
-    res.json(snippet.rows);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "failed to retrieve snippets" });
