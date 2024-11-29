@@ -114,4 +114,3 @@ async function deleteSnippet(req: Request, res: Response) {
   }
 }
 export { snippetRouter };
-// verify snippet or snippets
