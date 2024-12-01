@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS users(
 
 
 CREATE TABLE IF NOT EXISTS snippets(
-    snippet_id varchar(255) PRIMARY KEY
+    snippet_id SERIAL PRIMARY KEY 
     title varchar(255) not null,
     creation_date integer default extract (epoch from now()) not null,
     expiration_date integer not null,,
@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS snippets(
 );
 -- snippet_id variations
   -- snippet_id uuid default gen_random_uuid() primary key not null (uuid)
-  -- snippet_id SERIAL PRIMARY KEY (Auto-increment),
+  -- snippet_id SERIAL PRIMARY KEY (Auto-increment, number),
+  -- snippet_id varchar(255) PRIMARY KEY (string)
 
 CREATE TABLE IF NOT EXISTS tokens(
   hash text primary key,

@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc"
+    "build": "tsc",
+    "start": "node ./dist/server.js"
   },
   "author": "Chris forti",
   "license": "ISC",
