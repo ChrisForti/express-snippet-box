@@ -1,4 +1,4 @@
-import { db, pool } from "../db/db.js";
+import { db } from "../db/db.js";
 import { Router } from "express";
 import type { Request, Response } from "express";
 import { ensureAuthenticated } from "./auth.js";
