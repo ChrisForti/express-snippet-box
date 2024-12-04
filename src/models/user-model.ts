@@ -39,8 +39,7 @@ export class Users {
         throw new Error("Error hashing the password");
       }
 
-      // sql and params prep and verify
-      const sql = // RETURNING clause to return those values automatically
+      const sql =
         "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, created_at";
       const params = [firstName, lastName, email, passwordHash];
       const client = await this.pool.query(sql, params);

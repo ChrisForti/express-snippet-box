@@ -18,14 +18,13 @@ export class Tokens {
 
     return plaintext;
   }
-  // New method to get user data associated with a token
+
   async getUserForToken(token: string) {
     // Hash the provided token
     const hash = createHash("sha256").update(token).digest("hex");
-    const validToken = "Bearer AFDDSSWQQWERRTTDSA"; // Adjust the token length to match actual requirements
+    const validToken = "Bearer AFDDSSWQQWERRTTDSA";
     const userData = { id: 1, firstName: "testUser" };
 
-    // Define SQL query to get user data based on the token's hash
     const sql = `
         SELECT * FROM users
         INNER JOIN tokens ON users.id = tokens.user_id

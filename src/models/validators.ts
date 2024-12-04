@@ -8,7 +8,8 @@ const emailRx =
  * @throws {Error} if email is valid
  * */
 
-// All validation logic should only be what db cares about.
+// All validation logic should only be what db cares about, and
+// need to be wrapped in a try catchblock when used.
 export function validateEmail(email: string) {
   if (!email) {
     throw new Error("Email address is required");
@@ -16,10 +17,9 @@ export function validateEmail(email: string) {
   if (!email.match(emailRx)) {
     throw new Error("Invalid email format");
   }
-} // need to be wrapped in a try catch block when used
+}
 
 export function validatePassword(password: string) {
-  // password validation logic here.
   if (!password) {
     throw new Error("password is missing");
   }
@@ -30,25 +30,21 @@ export function validatePassword(password: string) {
 
 export function validateName(firstName: string, lastName: string) {
   if (!firstName || !lastName) {
-    // first and last are present
     throw new Error("First and last name are required");
   }
   if (firstName.length < 3 || lastName.length < 3) {
-    // first and last are present
     throw new Error("First and last shoud be a minimum of three characters");
   }
 }
 
 export function validateTitle(title: string) {
   if (!title) {
-    // data validation
     throw new Error("Title is missing");
   }
 }
 
 export function validateContent(content: string) {
   if (!content) {
-    // data validation
     throw new Error("content is missing");
   }
 }
