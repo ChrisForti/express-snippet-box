@@ -1,38 +1,57 @@
 import type { Request, Response, NextFunction } from "express";
+import { db } from "../db/db.js";
 
-async function getUserByToken(
-  token: string
-): Promise<{ id: number; username: string } | null> {
-  // Example implementation; replace with actual database logic
-  const validToken = "example_valid_token_of_43_characters_abcdefghij";
-  const userData = { id: 1, username: "testUser" };
-
-  return token === validToken ? userData : null;
-}
+type tokenParams = {
+  token: string;
+};
 
 export async function authenticate(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const authorizationHeader = req.headers.authorization;
-  if (!authorizationHeader) {
-    res.status(401).json({ error: "No credentials provided" });
-    req.user = null;
-  } else {
-    // TODO
-    const parts = authorizationHeader.split(" ");
-    if (parts.length !== 2 || parts[0] !== "Bearer") {
-      return res.status(401).json({ error: "Invalid authorization format" });
-    }
-    // Get the second element in the array, which is the token
-    const token = parts[1];
+  // Ensure req.user is initially null
+  req.user = null;
 
-    // Check that the token is exactly 43 characters long
-    //   if (token.length !== 43) {
-    //     return res.status(401).json({ error: "Invalid token length" });
-    //   }
+  const authorizationHeader = req.headers.authorization;
+
+  // Check if Authorization header exists
+  if (!authorizationHeader) {
+    return next();
   }
-  next();
+
+  // Split Authorization header into parts and ensure proper format
+  const parts = authorizationHeader.split(" ");
+
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return next();
+  }
+
+  // Extract the token and validate its length
+  const token = parts[1];
+
+  if (!token) {
+    return next();
+  }
+
+  if (token.length !== 43) {
+    return next();
+  }
+
+  try {
+    // Use the token to get user data
+    const user = await db.Models.Tokens.getUserForToken(token);
+
+    // Check if user data retrieval was successful
+    if (!user) {
+      return next();
+    } else {
+      req.user = user; // Attach user data to the request
+    }
+    return next(); // Proceed to next middleware
+  } catch (error) {
+    console.error("Error during token authentication:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 }
 // get second piece of the token (token: "Bearer AFDDSSWQQWERRTTDSA")
