@@ -44,7 +44,7 @@ export async function authenticate(
 
     // Check if user data retrieval was successful
     if (!user) {
-      return next();
+      return null;
     } else {
       req.user = user; // Attach user data to the request
     }

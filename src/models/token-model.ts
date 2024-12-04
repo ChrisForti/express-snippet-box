@@ -33,8 +33,8 @@ export class Tokens {
       `;
 
     // Use current timestamp to ensure token is not expired
-    const currentTimestamp = Math.trunc(Date.now() / 1000);
-    const params = [hash, currentTimestamp];
+    const expiry = Math.trunc(Date.now() / 1000);
+    const params = [hash, expiry];
 
     // Execute the query
     const result = await this.pool.query(sql, params);
