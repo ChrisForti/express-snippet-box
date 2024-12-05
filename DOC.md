@@ -13,7 +13,9 @@
 
 - `docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres`
 - Then run: `psql -U postgres -h localhost`
-  - You will then be prompted for the password you justgave on step 2. `Password for user postgres:`
+  - You will then be prompted for the password you just gave on step 2. `Password for user postgres:`
+
+5. Once everyhting is validated you can just run `psql -U postgres -h localhost`, and that will
 
 ### Once you enter said password you should see this your terminal.
 
