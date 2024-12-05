@@ -44,11 +44,10 @@ export async function authenticate(
 
     // Check if user data retrieval was successful
     if (!user) {
-      return null;
-    } else {
-      req.user = user; // Attach user data to the request
+      return next();
     }
-    return next(); // Proceed to next middleware
+    req.user = user;
+    next(); // Proceed to next middleware
   } catch (error) {
     console.error("Error during token authentication:", error);
     return res.status(500).json({ error: "Internal server error" });
