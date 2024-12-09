@@ -31,6 +31,7 @@ export async function authenticate(
   const token = parts[1];
 
   if (!token) {
+    //(typeof token !== "string")
     return next();
   }
 
@@ -52,5 +53,15 @@ export async function authenticate(
     console.error("Error during token authentication:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
+}
+export function ensureAuthenticated(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.user) {
+    return res.status(401).json({ error: "unauthorized" });
+  }
+  next();
 }
 // get second piece of the token (token: "Bearer AFDDSSWQQWERRTTDSA")
