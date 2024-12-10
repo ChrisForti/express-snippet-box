@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { createHash, randomBytes } from "crypto";
 import type pg from "pg";
 
@@ -5,6 +6,7 @@ export class Tokens {
   pool: pg.Pool;
 
   constructor(pool: pg.Pool) {
+    assert(pool, "pool is required");
     this.pool = pool;
   }
   async generateAuthenticationToken(userId: number) {

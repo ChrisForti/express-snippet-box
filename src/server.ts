@@ -1,6 +1,6 @@
 import express from "express";
 import "dotenv/config";
-import { authenticate } from "./routes/auth.js";
+import { authenticate } from "./middleware/auth.js";
 
 //create express app
 const app = express();
