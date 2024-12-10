@@ -1,5 +1,6 @@
 import express from "express";
-import { authenticate } from "./middleware/auth.js";
+import "dotenv/config";
+import { authenticate } from "./routes/auth.js";
 
 //create express app
 const app = express();
@@ -15,10 +16,9 @@ app.get("/hello", (req, res) => {
   // res.json({ serverMessage: "Hello world!" });
 });
 
-import { rootRouter } from "./controllers/root.js";
-import { userRouter } from "./controllers/user-controller.js";
-import { snippetRouter } from "./controllers/snippet-controller.js";
-import { authenticate } from "./middleware/auth.js";
+import { rootRouter } from "./routes/root.js";
+import { userRouter } from "./routes/user.js";
+import { snippetRouter } from "./routes/snippet.js";
 
 app.use("/", rootRouter);
 app.use("/users", userRouter);
