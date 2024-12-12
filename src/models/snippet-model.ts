@@ -29,14 +29,6 @@ export class Snippets {
     userId: number
   ) {
     try {
-      validateTitle(title);
-
-      validateContent(content);
-
-      validateExperationDate(expirationDate);
-
-      validateId(userId);
-
       const sql =
         "INSERT INTO snippets (title, expiration_date, user_id, content) VALUES ($1, $2, $3, $4) RETURNING id";
       const params = [title, expirationDate, userId, content];
@@ -57,8 +49,6 @@ export class Snippets {
 
   async getSnippetById(snippetId: number) {
     try {
-      validateId(snippetId);
-
       const sql = "SELECT * FROM snippets WHERE snippet_id = $1";
 
       const result = await this.pool.query(sql, [snippetId]);
@@ -72,8 +62,6 @@ export class Snippets {
 
   async getAllSnippetsByUserId(userId: number) {
     try {
-      validateId(userId);
-
       const sql = "SELECT * FROM snippets WHERE user_id = $1";
 
       const result = await this.pool.query(sql, [userId]);
@@ -86,14 +74,12 @@ export class Snippets {
   }
 
   async updateSnippet(
-    snippetId: number,
+    snippetId: string,
     title: string,
     content: string,
     expirationDate: string
   ) {
     try {
-      validateId(snippetId);
-
       // Retrieve the existing snippet to get default field values if needed
       const snippetQuery = `
       SELECT title, content, expiration_date 
@@ -131,7 +117,6 @@ export class Snippets {
     const sql = "DELETE FROM snippets WHERE id = $1";
 
     try {
-      validateId(snippetId);
       const result = await this.pool.query(sql, [snippetId]);
       if (result.rowCount === 0) {
         return false;

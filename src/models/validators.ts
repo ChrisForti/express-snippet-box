@@ -49,12 +49,21 @@ export function validateContent(content: string) {
   }
 }
 
-export function validateId(id: number) {
-  if (!id) {
+export function validateId(userId: number) {
+  if (!userId) {
     throw new Error("user id is missing");
   }
-  if (!Number.isInteger(id) || id < 1) {
+  if (!Number.isInteger(userId) || userId < 1) {
     throw new Error("user id must be a number");
+  }
+}
+
+export function validateSnippetId(snippetId?: string) {
+  if (!snippetId) {
+    throw new Error("snippet id is missing");
+  }
+  if (!snippetId || typeof snippetId !== "string") {
+    throw new Error("Invalid snippet ID");
   }
 }
 

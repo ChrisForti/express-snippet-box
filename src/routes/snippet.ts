@@ -2,6 +2,13 @@ import { db } from "../db/db.js";
 import { Router } from "express";
 import type { Request, Response } from "express";
 import { ensureAuthenticated } from "./auth.js";
+import {
+  validateTitle,
+  validateContent,
+  validateExperationDate,
+  validateId,
+  validateSnippetId,
+} from "../models/validators.js";
 
 const snippetRouter = Router();
 
@@ -9,8 +16,8 @@ type SnippetControllerBodyParams = {
   title: string;
   content: string;
   expirationDate: string;
-  userId: string;
-  snippetId: string;
+  userId: number;
+  snippetId: string | undefined;
 };
 
 snippetRouter.post("/", ensureAuthenticated, createSnippet);
@@ -20,11 +27,19 @@ async function createSnippet(req: Request, res: Response) {
     req.body as SnippetControllerBodyParams;
 
   try {
+    validateTitle(title);
+
+    validateContent(content);
+
+    validateExperationDate(expirationDate);
+
+    validateId(userId);
+
     const plaintext = await db.Models.Snippets.createSnippet(
       title,
       content,
       expirationDate,
-      parseInt(userId)
+      userId
     );
   } catch (error) {
     console.error("error creating snippet:", error);
@@ -38,14 +53,16 @@ async function createSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/all/:userId", ensureAuthenticated, getBySnippetId);
+snippetRouter.get("/: snippetId ", ensureAuthenticated, getBySnippetId);
 // Function controller to read/get a snippet
 async function getBySnippetId(req: Request, res: Response) {
-  const { snippetId } = req.params as SnippetControllerBodyParams;
+  const { snippetId } = req.params;
 
   try {
+    validateSnippetId(snippetId);
+
     const snippet = await db.Models.Snippets.getSnippetById(
-      parseInt(snippetId)
+      parseInt(snippetId!)
     );
     res.json(snippet.rows);
   } catch (error) {
@@ -57,12 +74,12 @@ async function getBySnippetId(req: Request, res: Response) {
 snippetRouter.get("/all/:userId", ensureAuthenticated, getAllSnippetsByUserId);
 // Function controller to read/get a snippet
 async function getAllSnippetsByUserId(req: Request, res: Response) {
-  const { userId } = req.params as SnippetControllerBodyParams;
+  const { userId } = req.params as unknown as SnippetControllerBodyParams;
 
   try {
-    const snippet = await db.Models.Snippets.getAllSnippetsByUserId(
-      parseInt(userId)
-    );
+    validateId(userId);
+
+    const snippet = await db.Models.Snippets.getAllSnippetsByUserId(userId);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "failed to retrieve snippets" });
@@ -72,14 +89,16 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
 snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
 // Function controller to update a snippet
 async function updateSnippet(req: Request, res: Response) {
-  const { snippetId } = req.params as SnippetControllerBodyParams;
+  const { snippetId } = req.params;
 
   const { title, content, expirationDate } =
     req.body as SnippetControllerBodyParams;
 
   try {
+    validateSnippetId(snippetId);
+
     const updateSnippet = await db.Models.Snippets.updateSnippet(
-      parseInt(snippetId),
+      snippetId!,
       title,
       content,
       expirationDate
@@ -99,6 +118,7 @@ async function deleteSnippet(req: Request, res: Response) {
   const { snippetId } = req.body; // get snippetId
 
   try {
+    validateSnippetId(snippetId);
     const deleteSnippet = await db.Models.Snippets.deleteSnippetBySnippetId(
       snippetId
     );
