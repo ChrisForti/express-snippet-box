@@ -1,19 +1,5 @@
 import type pg from "pg";
 import assert from "assert";
-import {
-  validateContent,
-  validateExperationDate,
-  validateId,
-  validateTitle,
-} from "./validators.js";
-
-type SnippetModel = {
-  tile: string;
-  content: string;
-  expirationDate: number;
-  userId: number;
-  snippetId: number;
-};
 
 export class Snippets {
   private pool: pg.Pool;
