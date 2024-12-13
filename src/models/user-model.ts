@@ -1,6 +1,7 @@
 import type pg from "pg";
 import bcrypt from "bcrypt";
 import assert from "assert";
+import { db } from "../db/db.js";
 
 type UserModel = {
   id: number;
@@ -75,6 +76,66 @@ export class Users {
     }
   }
 
+  async userLogin(email: string, password: string) {
+    // Validate email and password
+    if (!email) {
+      throw new Error("Email is missing");
+    }
+    const emailRx =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    if (!email.match(emailRx)) {
+      throw new Error("Invalid email format");
+    }
+    if (!password) {
+      throw new Error("Password is missing");
+    }
+    if (password.length < 8) {
+      throw new Error("Minimum password length is 8 characters");
+    }
+
+    try {
+      // Get user from the database by email
+      const result = await this.pool.query(
+        "SELECT * FROM users WHERE email = $1",
+        [email]
+      );
+
+      if (result.rows.length === 0) {
+        throw new Error("User not found");
+      }
+
+      // Get the user
+      const user = result.rows[0];
+
+      // Verify the password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        throw new Error("Credentials invalid");
+      }
+
+      if (!user.email_verified) {
+        throw new Error("Email not verified");
+      }
+
+      // Generate authentication token
+      const authToken = await db.Models.Tokens.generateAuthenticationToken(
+        user.id
+      );
+
+      // Return the user and token if login is successful
+      return {
+        id: user.id,
+        email: user.email,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        authToken,
+      };
+    } catch (err) {
+      console.error("Login failed: ", err);
+      return null;
+    }
+  }
+
   async getUserByEmail(email: string) {
     const result = await this.pool.query(
       "SELECT * FROM users WHERE email = $1",
@@ -115,9 +176,9 @@ export class Users {
         firstName: result.rows[0].first_name,
         lastName: result.rows[0].last_name,
       };
-    } catch (err) {
-      console.error("Failed to get user by ID: ", err);
-      throw err;
+    } catch (error) {
+      console.error("Failed to get user by ID: ", error);
+      return null;
     }
   }
 
@@ -151,7 +212,6 @@ export class Users {
         params.push(passwordHash);
       }
 
-      // Remove the trailing comma and space from the query
       updateUserQuery = updateUserQuery.trim().replace(/, $/, "");
 
       // Complete the query by adding the condition to update the specific user
@@ -179,7 +239,7 @@ export class Users {
     }
   }
 
-  async deleteUser(id: number | undefined) {
+  async deleteUser(id: number) {
     if (!id) {
       throw new Error("user id is missing");
     }
@@ -196,9 +256,9 @@ export class Users {
         throw new Error("User not found");
       }
       return { id: result.rows[0].id };
-    } catch (err) {
-      console.error("Failed to delete user: ", err);
-      throw err;
+    } catch (error) {
+      console.error("Failed to delete user: ", error);
+      throw error;
     }
   }
 }

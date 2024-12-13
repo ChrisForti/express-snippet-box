@@ -37,18 +37,6 @@ export function validateName(firstName: string, lastName: string) {
   }
 }
 
-export function validateTitle(title: string) {
-  if (!title) {
-    throw new Error("Title is missing");
-  }
-}
-
-export function validateContent(content: string) {
-  if (!content) {
-    throw new Error("content is missing");
-  }
-}
-
 export function validateId(userId: number) {
   if (!userId) {
     throw new Error("user id is missing");
@@ -64,6 +52,18 @@ export function validateSnippetId(snippetId?: string) {
   }
   if (!snippetId || typeof snippetId !== "string") {
     throw new Error("Invalid snippet ID");
+  }
+}
+
+export function validateTitle(title: string) {
+  if (!title) {
+    throw new Error("Title is missing");
+  }
+}
+
+export function validateContent(content: string) {
+  if (!content) {
+    throw new Error("content is missing");
   }
 }
 

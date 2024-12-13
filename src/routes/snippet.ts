@@ -1,7 +1,7 @@
 import { db } from "../db/db.js";
 import { Router } from "express";
 import type { Request, Response } from "express";
-import { ensureAuthenticated } from "./auth.js";
+import { ensureAuthenticated } from "../middleware/auth.js";
 import {
   validateTitle,
   validateContent,

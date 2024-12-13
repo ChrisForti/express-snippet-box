@@ -29,7 +29,7 @@ type CreateUserBodyParams = {
 async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } =
     req.body as CreateUserBodyParams;
-
+  const userId = req.user!.id;
   try {
     validateName(firstName, lastName);
 
@@ -55,22 +55,25 @@ async function createUser(req: Request, res: Response) {
 
 userRouter.post("/login", loginUser);
 
-type loginUserBodyParams = {
-  email: string;
-  password: string;
-};
+// type loginUserBodyParams = {
+//   email: string;
+//   password: string;
+// };
 
 // Route controller to login users
 async function loginUser(req: Request, res: Response) {
-  const { email, password } = req.body as loginUserBodyParams;
+  const { email, password } = req.body;
 
-  // get user from database by email should now be the same pattern as above
   try {
     validateEmail(email);
 
     validatePassword(password);
 
     const user = await db.Models.Users.getUserByEmail(email);
+
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
 
     const verifiedPassword = await bcrypt.compare(password, user.passwordHash);
 
@@ -108,12 +111,6 @@ async function getUserById(req: Request, res: Response) {
     }
   }
 }
-type updateUserParams = {
-  email: string;
-  firstName: string;
-  lastName: string;
-  password: string;
-};
 
 async function updateUser(req: Request, res: Response) {
   const userId = req.user!.id;

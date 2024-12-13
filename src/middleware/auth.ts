@@ -1,10 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { db } from "../db/db.js";
 
-type tokenParams = {
-  token: string;
-};
-
 export async function authenticate(
   req: Request,
   res: Response,
@@ -30,12 +26,7 @@ export async function authenticate(
   // Extract the token and validate its length
   const token = parts[1];
 
-  if (!token) {
-    //(typeof token !== "string")
-    return next();
-  }
-
-  if (token.length !== 43) {
+  if (typeof token !== "string" || token.length !== 43) {
     return next();
   }
 
@@ -51,7 +42,7 @@ export async function authenticate(
     next(); // Proceed to next middleware
   } catch (error) {
     console.error("Error during token authentication:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    next();
   }
 }
 export function ensureAuthenticated(
