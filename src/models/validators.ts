@@ -10,6 +10,9 @@ const emailRx =
 
 // All validation logic should only be what db cares about, and
 // need to be wrapped in a try catchblock when used.
+
+// user validations
+
 export function validateEmail(email: string) {
   if (!email) {
     throw new Error("Email address is required");
@@ -46,6 +49,7 @@ export function validateId(userId: number) {
   }
 }
 
+// snippet validations
 export function validateSnippetId(snippetId?: string) {
   if (!snippetId) {
     throw new Error("snippet id is missing");
