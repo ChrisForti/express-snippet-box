@@ -13,7 +13,7 @@ app.use(authenticate);
 
 app.get("/hello", (req, res) => {
   console.log(req.user, "This is the user");
-  // res.json({ serverMessage: "Hello world!" });
+  res.json({ serverMessage: "Hello world!" });
 });
 
 import { rootRouter } from "./routes/root.js";

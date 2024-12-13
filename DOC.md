@@ -80,3 +80,7 @@ const client = await this.pool.query(sql, params);
 # to finish
 
 - attach all params to the req.whatever by relocating ensure authenticate, which then can be called inside the route handler, which I also need to add. (Start here)[https://github.com/michaelatimore/express-snippet-box/blob/main/src/middleware/auth.ts]
+
+## token
+
+"ttDmfeckgKtRan0R1se9RhH2_GdKByu2GB2ABHZQnPg"

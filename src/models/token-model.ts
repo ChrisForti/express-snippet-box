@@ -28,7 +28,7 @@ export class Tokens {
     const userData = { id: 1, firstName: "testUser" };
 
     const sql = `
-        SELECT * FROM users
+        SELECT id, first_name, last_name, email, email_verified FROM users
         INNER JOIN tokens ON users.id = tokens.user_id
         WHERE tokens.hash = $1 AND tokens.expiry > $2
       `;

@@ -117,18 +117,12 @@ export class Users {
         throw new Error("Email not verified");
       }
 
-      // Generate authentication token
-      const authToken = await db.Models.Tokens.generateAuthenticationToken(
-        user.id
-      );
-
       // Return the user and token if login is successful
       return {
         id: user.id,
         email: user.email,
         firstName: user.first_name,
         lastName: user.last_name,
-        authToken,
       };
     } catch (err) {
       console.error("Login failed: ", err);
@@ -235,7 +229,7 @@ export class Users {
       };
     } catch (error) {
       console.error("Failed to update user: ", error);
-      throw error;
+      return null;
     }
   }
 
@@ -258,7 +252,7 @@ export class Users {
       return { id: result.rows[0].id };
     } catch (error) {
       console.error("Failed to delete user: ", error);
-      throw error;
+      return null;
     }
   }
 }

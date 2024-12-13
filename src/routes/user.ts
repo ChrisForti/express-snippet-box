@@ -81,7 +81,9 @@ async function loginUser(req: Request, res: Response) {
       return res.status(401).json({ message: "Credentials invalid" });
     }
 
-    const plaintext = db.Models.Tokens.generateAuthenticationToken(user.id);
+    const plaintext = await db.Models.Tokens.generateAuthenticationToken(
+      user.id
+    );
 
     res
       .status(200)
