@@ -24,7 +24,7 @@ export class Tokens {
   async getUserForToken(token: string) {
     // Hash the provided token
     const hash = createHash("sha256").update(token).digest("hex");
-    const validToken = "Bearer AFDDSSWQQWERRTTDSA";
+    // const validToken = "Bearer AFDDSSWQQWERRTTDSA";
     const userData = { id: 1, firstName: "testUser" };
 
     const sql = `
