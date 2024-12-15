@@ -25,6 +25,13 @@
 
 `curl -d '{"username": "Chris"}' -H "Content-Type: application/json" -X POST localhost:3000/user`
 
+- example of curl user login:
+  `BODY='{"email":"st8razed@gmail.com","firstName":"chris","lastName":"forti","password":"pa55word"}'`
+  - The run your curl
+    ` curl -d "$BODY" -H 'Content-Type: application/json' localhost:3000/users/login`
+  - then capture token hash
+    `{"message":"User retrieved successfully","token":"LGMwu7cD8cmhPDpJ8JqD27SGpjzaHmqeUgHr6i97vko"}% `
+
 ## userModel suggestions from chad
 
 1. **Combine First Name and Last Name into a Single Name**: The code attempts to combine `firstName` and `lastName` into a `name` object. It's important to ensure that this combined data structure aligns with the database schema requirements.
