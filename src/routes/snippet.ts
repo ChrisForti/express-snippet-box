@@ -22,6 +22,7 @@ type SnippetControllerBodyParams = {
 
 snippetRouter.post("/", ensureAuthenticated, createSnippet);
 snippetRouter.get("/: snippetId ", ensureAuthenticated, getBySnippetId);
+snippetRouter.get("/snippets", ensureAuthenticated, getAllSnippetsByUserId);
 snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
 snippetRouter.delete("/:snippetId", ensureAuthenticated, deleteSnippet);
 
