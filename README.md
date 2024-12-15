@@ -23,7 +23,7 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
 - If you have not already created a container from the project dependant image see [DOC.md](DOC.md)
 - **In your terminal:**
   `psql -U postgres -h localhost`
-- **For a basic GUI:**
+- **For the basic GUI `adminer`:**
   `curl -X POST localhost:8080/user`
   - Then navigate to `localhost:8080` in your browser.
 
