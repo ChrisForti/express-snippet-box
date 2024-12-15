@@ -21,7 +21,10 @@ type SnippetControllerBodyParams = {
 };
 
 snippetRouter.post("/", ensureAuthenticated, createSnippet);
-// Function controller to create a new snippet
+snippetRouter.get("/: snippetId ", ensureAuthenticated, getBySnippetId);
+snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
+snippetRouter.delete("/:snippetId", ensureAuthenticated, deleteSnippet);
+
 async function createSnippet(req: Request, res: Response) {
   const { title, content, expirationDate, userId } =
     req.body as SnippetControllerBodyParams;
@@ -53,8 +56,6 @@ async function createSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/: snippetId ", ensureAuthenticated, getBySnippetId);
-// Function controller to read/get a snippet
 async function getBySnippetId(req: Request, res: Response) {
   const { snippetId } = req.params;
 
@@ -71,23 +72,26 @@ async function getBySnippetId(req: Request, res: Response) {
   }
 }
 
-snippetRouter.get("/all/:userId", ensureAuthenticated, getAllSnippetsByUserId);
-// Function controller to read/get a snippet
+// TODO this method is wrong
 async function getAllSnippetsByUserId(req: Request, res: Response) {
-  const { userId } = req.params as unknown as SnippetControllerBodyParams;
+  const userId = req.user!.id;
 
   try {
     validateId(userId);
 
     const snippet = await db.Models.Snippets.getAllSnippetsByUserId(userId);
+    res.json(snippet);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "failed to retrieve snippets" });
+    if (error instanceof Error && error.message === "Snippets not found") {
+      res.status(404).json({ message: error.message });
+    } else {
+      res.status(500).json({ message: "Failed to retrieve snippets" });
+    }
   }
 }
 
-snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
-// Function controller to update a snippet
 async function updateSnippet(req: Request, res: Response) {
   const { snippetId } = req.params;
 
@@ -112,10 +116,8 @@ async function updateSnippet(req: Request, res: Response) {
   }
 }
 
-snippetRouter.delete("/:snippetId", ensureAuthenticated, deleteSnippet);
-// Function to delete a snippet
 async function deleteSnippet(req: Request, res: Response) {
-  const { snippetId } = req.body; // get snippetId
+  const { snippetId } = req.body;
 
   try {
     validateSnippetId(snippetId);

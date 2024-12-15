@@ -13,23 +13,15 @@ import { ensureAuthenticated } from "../middleware/auth.js";
 const userRouter = Router();
 
 userRouter.post("/", createUser);
-
+userRouter.post("/login", loginUser);
 userRouter.get("/", ensureAuthenticated, getUserById);
 userRouter.put("/", ensureAuthenticated, updateUser);
 userRouter.delete("/", ensureAuthenticated, deleteUser);
 
-type CreateUserBodyParams = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-};
-
-// Route controller to create a user
 async function createUser(req: Request, res: Response) {
-  const { email, firstName, lastName, password } =
-    req.body as CreateUserBodyParams;
+  const { email, firstName, lastName, password } = req.body;
   const userId = req.user!.id;
+
   try {
     validateName(firstName, lastName);
 
@@ -53,14 +45,6 @@ async function createUser(req: Request, res: Response) {
   }
 }
 
-userRouter.post("/login", loginUser);
-
-// type loginUserBodyParams = {
-//   email: string;
-//   password: string;
-// };
-
-// Route controller to login users
 async function loginUser(req: Request, res: Response) {
   const { email, password } = req.body;
 
@@ -96,6 +80,7 @@ async function loginUser(req: Request, res: Response) {
 
 async function getUserById(req: Request, res: Response) {
   const userId = req.user!.id;
+
   try {
     validateId(userId);
 
@@ -116,8 +101,8 @@ async function getUserById(req: Request, res: Response) {
 
 async function updateUser(req: Request, res: Response) {
   const userId = req.user!.id;
-
   const { email, firstName, lastName, password } = req.body;
+
   try {
     validateId(userId);
 
@@ -145,6 +130,7 @@ async function updateUser(req: Request, res: Response) {
     }
   }
 }
+
 async function deleteUser(req: Request, res: Response) {
   const userId = req.user!.id;
 

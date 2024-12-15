@@ -47,6 +47,12 @@ export class Snippets {
   }
 
   async getAllSnippetsByUserId(userId: number) {
+    if (userId === null || userId === undefined) {
+      throw new Error("userId is missing");
+    }
+    if (typeof userId !== "number") {
+      userId = parseInt(userId as string);
+    }
     try {
       const sql = "SELECT * FROM snippets WHERE user_id = $1";
 
