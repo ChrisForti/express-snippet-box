@@ -1,6 +1,6 @@
 # Snippet Box API
 
-This is a strictly backend Api that will serve snippets of code, and uses postgres as a Database.
+This is a strictly backend Api that will serve snippets of code, and uses postgres as a Database. This is my first fullstack project.
 
 ## Getting started
 
