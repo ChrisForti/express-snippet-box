@@ -39,44 +39,6 @@
 
 6. **Return User Model**: When an error occurs during the user creation process, the method always throws a generic error message. It would be more informative to return `null` in this case and handle the error differently.
 
-## getUserByEmail model
-
-`// retreive user by email
-async getUserByEmail(email: string): Promise<UserModel | null> {
-try {
-const sql = "SELECT password_hash FROM users WHERE email = $1";
-const params = [email];
-const client = await this.pool.query(sql, params);
-
-      if (client.rows.length != 1) {
-        throw new Error("Failed to create a new user. See logs for details.");
-      }
-
-      const data = client.rows[0];
-
-      const user: UserModel = {
-        id: data.id as number,
-        firstName: data.name as string,
-        lastName: data.name as string,
-        email: data.email as string,
-        passwordHash: data.password_hash.toString() as string,
-        createdAt: data.created_at as Date,
-      };
-
-      // Suggest this for less code???
-      // const name = `${firstName} ${lastName}`;
-      // if (!name) {
-      //   throw new Error("Invalid name format");
-      // }
-
-      return user;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-
-}`
-
 # to finish
 
 - attach all params to the req.whatever by relocating ensure authenticate, which then can be called inside the route handler, which I also need to add. (Start here)[https://github.com/michaelatimore/express-snippet-box/blob/main/src/middleware/auth.ts]
