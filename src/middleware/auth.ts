@@ -60,4 +60,4 @@ export function ensureAuthenticated(
   next();
 }
 
-// make put request to verify code and update users password
+// access db in railway and add <scope text not null>

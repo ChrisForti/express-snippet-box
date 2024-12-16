@@ -18,6 +18,8 @@ userRouter.post("/", createUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/", ensureAuthenticated, getUserById);
 userRouter.put("/", ensureAuthenticated, updateUser);
+userRouter.put("/", updatePassword);
+// make put request to verify code and update users password
 userRouter.delete("/", ensureAuthenticated, deleteUser);
 
 userRouter.post("/reset", sendResetEmail);
@@ -183,6 +185,12 @@ async function sendResetEmail(req: Request, res: Response) {
     } else {
       res.status(500).json({ message: "Server failed to process request" });
     }
+  }
+}
+
+async function updatePassword(scope: string, req: Request, res: Response) {
+  if (!scope) {
+    res.status(400).json({ message: "invalid code" });
   }
 }
 
