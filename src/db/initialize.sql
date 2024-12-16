@@ -18,14 +18,12 @@ CREATE TABLE IF NOT EXISTS snippets(
     user_id bigint NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     content text not null
 );
--- snippet_id variations
-  -- snippet_id uuid default gen_random_uuid() primary key not null (uuid)
-  -- snippet_id SERIAL PRIMARY KEY (Auto-increment, number),
-  -- snippet_id varchar(255) PRIMARY KEY (string)
+
 
 CREATE TABLE IF NOT EXISTS tokens(
   hash text primary key,
   user_id integer not null references users(id) ON DELETE CASCADE,
-  expiry integer not null 
+  expiry integer not null, 
+  scope text not null 
 );
 

@@ -16,19 +16,21 @@ type SnippetControllerBodyParams = {
   title: string;
   content: string;
   expirationDate: string;
-  userId: number;
-  snippetId: string | undefined;
 };
 
 snippetRouter.post("/", ensureAuthenticated, createSnippet);
-snippetRouter.get("/: snippetId ", ensureAuthenticated, getBySnippetId);
-snippetRouter.get("/snippets", ensureAuthenticated, getAllSnippetsByUserId);
+snippetRouter.get("/all/:userId", getAllSnippetsByUserId);
+snippetRouter.get("/:snippetId ", getBySnippetId);
 snippetRouter.put("/:snippetId", ensureAuthenticated, updateSnippet);
 snippetRouter.delete("/:snippetId", ensureAuthenticated, deleteSnippet);
 
 async function createSnippet(req: Request, res: Response) {
-  const { title, content, expirationDate, userId } =
+  const { title, content, expirationDate } =
     req.body as SnippetControllerBodyParams;
+  if (!req.user) {
+    return res.status(401).json({ message: "unauthorized" });
+  }
+  const userId = req.user.id;
 
   try {
     validateTitle(title);
@@ -39,12 +41,13 @@ async function createSnippet(req: Request, res: Response) {
 
     validateId(userId);
 
-    const plaintext = await db.Models.Snippets.createSnippet(
+    const snippet = await db.Models.Snippets.createSnippet(
       title,
       content,
       expirationDate,
       userId
     );
+    res.status(201).json({ snippet });
   } catch (error) {
     console.error("error creating snippet:", error);
     if (error instanceof Error) {
@@ -80,8 +83,14 @@ async function getAllSnippetsByUserId(req: Request, res: Response) {
   try {
     validateId(userId);
 
-    const snippet = await db.Models.Snippets.getAllSnippetsByUserId(userId);
-    res.json(snippet);
+    const snippets = await db.Models.Snippets.getAllSnippetsByUserId(userId);
+    if (!snippets || snippets.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No snippets found for this user" });
+    }
+
+    res.json(snippets);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "failed to retrieve snippets" });
@@ -119,11 +128,13 @@ async function updateSnippet(req: Request, res: Response) {
 
 async function deleteSnippet(req: Request, res: Response) {
   const { snippetId } = req.body;
+  const userId = req.user!.id;
 
   try {
     validateSnippetId(snippetId);
     const deleteSnippet = await db.Models.Snippets.deleteSnippetBySnippetId(
-      snippetId
+      snippetId,
+      userId
     );
 
     if (!deleteSnippet) {

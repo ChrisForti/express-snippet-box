@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { db } from "../db/db.js";
+import { scope } from "../models/token-model.js";
 
 export async function authenticate(
   req: Request,
@@ -32,7 +33,10 @@ export async function authenticate(
 
   try {
     // Use the token to get user data
-    const user = await db.Models.Tokens.getUserForToken(token);
+    const user = await db.Models.Tokens.getUserForToken(
+      token,
+      scope.AUTHENTICATION
+    );
 
     // Check if user data retrieval was successful
     if (!user) {
@@ -51,8 +55,9 @@ export function ensureAuthenticated(
   next: NextFunction
 ) {
   if (!req.user) {
-    return res.status(401).json({ error: "unauthorized" });
+    return res.status(401).json({ error: "Unauthorized" });
   }
   next();
 }
-// get second piece of the token (token: "Bearer AFDDSSWQQWERRTTDSA")
+
+// make put request to verify code and update users password

@@ -105,11 +105,11 @@ export class Snippets {
     }
   }
 
-  async deleteSnippetBySnippetId(snippetId: number) {
-    const sql = "DELETE FROM snippets WHERE id = $1";
+  async deleteSnippetBySnippetId(snippetId: number, userId: number) {
+    const sql = "DELETE FROM snippets WHERE id = $1 and user_id = $2";
 
     try {
-      const result = await this.pool.query(sql, [snippetId]);
+      const result = await this.pool.query(sql, [snippetId, userId]);
       if (result.rowCount === 0) {
         return false;
       } else {

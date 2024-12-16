@@ -9,6 +9,8 @@ import {
   validatePassword,
 } from "../models/validators.js";
 import { ensureAuthenticated } from "../middleware/auth.js";
+import { transporter } from "../mailer/mailer.js";
+import { nodemailerUser } from "../constants.js";
 
 const userRouter = Router();
 
@@ -18,9 +20,10 @@ userRouter.get("/", ensureAuthenticated, getUserById);
 userRouter.put("/", ensureAuthenticated, updateUser);
 userRouter.delete("/", ensureAuthenticated, deleteUser);
 
+userRouter.post("/reset", sendResetEmail);
+
 async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
-  const userId = req.user!.id;
 
   try {
     validateName(firstName, lastName);
@@ -92,7 +95,7 @@ async function getUserById(req: Request, res: Response) {
     res.status(200).json(user);
   } catch (error) {
     if (error instanceof Error) {
-      res.status(404).json({ message: error.message });
+      res.status(400).json({ message: error.message });
     } else {
       res.status(500).json({ message: "Failed to get user" });
     }
@@ -140,9 +143,45 @@ async function deleteUser(req: Request, res: Response) {
     res.status(200).json(deletedUserId);
   } catch (err) {
     if (err instanceof Error) {
-      res.status(404).json({ message: err.message });
+      res.status(400).json({ message: err.message });
     } else {
-      res.status(500).json({ message: "Failed to delete user" });
+      res.status(500).json({ message: "Failed to delete user" }); //
+    }
+  }
+}
+
+async function sendResetEmail(req: Request, res: Response) {
+  const email = req.body.email;
+  try {
+    validateEmail(email);
+
+    const user = await db.Models.Users.getUserByEmail(email);
+
+    const resetToken = await db.Models.Tokens.generatePasswordResetToken(
+      user.id
+    );
+
+    const emailTemplate = {
+      from: `"Snippet Box - No Reply" <${nodemailerUser}>`, // sender address
+      to: email, // recipient
+      subject: "Password Reset - Snippet Box", // subject line
+      text: `We have recieved a request to reset your password.\n\nTo reset your password send a PUT request with your code and new password to /users/reset\n\nYour code is: ${resetToken}\n\nIf you did not make this request, you can safely ignore this email.\n\nSincerely,\nSnippet Box Team`,
+      // html:
+    };
+
+    const result = await transporter.sendMail(emailTemplate);
+    if (!result) {
+      return res
+        .status(500)
+        .json({ message: "Server failed to process request" });
+    }
+    return res.status(202).json({ message: "Email sent successfully" });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error);
+      res.status(400).json({ message: "Request could not be processed" });
+    } else {
+      res.status(500).json({ message: "Server failed to process request" });
     }
   }
 }
