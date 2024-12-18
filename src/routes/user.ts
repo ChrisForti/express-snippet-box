@@ -19,9 +19,7 @@ userRouter.post("/login", loginUser);
 userRouter.get("/", ensureAuthenticated, getUserById);
 userRouter.put("/", ensureAuthenticated, updateUser);
 userRouter.put("/", ensureAuthenticated, updatePassword);
-// make put request to verify code and update users password
 userRouter.delete("/", ensureAuthenticated, deleteUser);
-
 userRouter.post("/reset", sendResetEmail);
 
 async function createUser(req: Request, res: Response) {
