@@ -18,7 +18,7 @@ userRouter.post("/", createUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/", ensureAuthenticated, getUserById);
 userRouter.put("/", ensureAuthenticated, updateUser);
-userRouter.put("/", updatePassword);
+userRouter.put("/", ensureAuthenticated, updatePassword);
 // make put request to verify code and update users password
 userRouter.delete("/", ensureAuthenticated, deleteUser);
 
@@ -189,11 +189,31 @@ async function sendResetEmail(req: Request, res: Response) {
 }
 
 async function updatePassword(req: Request, res: Response) {
-  const { resetToken, newPassword } = req.body;
+  const { resetToken, newPassword, userId } = req.body;
   if (!resetToken || !newPassword) {
     res
       .status(400)
       .json({ message: "Reset token and new password are required" });
+  }
+  try {
+    // Verify the resetToken and retrieve userId
+    const userIdFromToken = await db.Models.Tokens.generatePasswordResetToken(
+      resetToken
+    );
+
+    if (!userIdFromToken || userId !== userIdFromToken) {
+      return res.status(400).json({ message: "Invalid reset token or user" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update user password in the database
+    await db.Models.Users.updatePassword(userIdFromToken, hashedPassword);
+
+    return res.status(200).json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Failed to update password" });
   }
 }
 

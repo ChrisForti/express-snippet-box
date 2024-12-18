@@ -13,6 +13,9 @@ type UserModel = {
 };
 
 export class Users {
+  updatePassword(userIdFromToken: string, hashedPassword: string) {
+    throw new Error("Method not implemented.");
+  }
   private pool: pg.Pool;
 
   constructor(pool: pg.Pool) {
