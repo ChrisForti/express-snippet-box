@@ -188,9 +188,12 @@ async function sendResetEmail(req: Request, res: Response) {
   }
 }
 
-async function updatePassword(scope: string, req: Request, res: Response) {
-  if (!scope) {
-    res.status(400).json({ message: "invalid code" });
+async function updatePassword(req: Request, res: Response) {
+  const { resetToken, newPassword } = req.body;
+  if (!resetToken || !newPassword) {
+    res
+      .status(400)
+      .json({ message: "Reset token and new password are required" });
   }
 }
 
