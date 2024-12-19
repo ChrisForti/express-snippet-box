@@ -26,8 +26,8 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
     `npm run psql`
   - If not operating in this codebase, or just like the hardway run:
     `psql -U postgres -h localhost`
-- **For the basic GUI `adminer`:**
-  `curl -X POST localhost:8080/user`
+  - **For the basic GUI `adminer`:**
+    `curl -X POST localhost:8080/user`
   - Then navigate to `localhost:8080` in your browser.
 
 5. Once you are linked up, run the server:
