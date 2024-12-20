@@ -19,8 +19,8 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
 ## Usage
 
 4. Get docker online, and run the postgres container:
+   - [Docker install](https://docs.docker.com/get-started/)
 
-- If you have not already created a container from the project dependant image see [DOC.md](DOC.md)
 - **In your terminal:**
   - In this project run:
     `npm run psql`
