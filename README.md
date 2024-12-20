@@ -20,7 +20,7 @@ This is a strictly backend Api that will serve snippets of code, and uses postgr
 
 4. Get docker online, and run the postgres container:
    - [Docker install](https://docs.docker.com/get-started/)
-   - [Postgres](https://www.postgresql.org/docs/)
+   - [Postgres install](https://www.postgresql.org/download/)
 
 - **In your terminal:**
   - In this project run:
