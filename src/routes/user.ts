@@ -188,6 +188,8 @@ async function sendResetEmail(req: Request, res: Response) {
 
 async function updatePassword(req: Request, res: Response) {
   const { resetToken, newPassword, userId } = req.body;
+
+  // checks for presence of user id, and reset token
   if (!resetToken || !newPassword) {
     res
       .status(400)
@@ -199,10 +201,12 @@ async function updatePassword(req: Request, res: Response) {
       resetToken
     );
 
+    // checks if the user Id matches the id, and token sent.
     if (!userIdFromToken || userId !== userIdFromToken) {
       return res.status(400).json({ message: "Invalid reset token or user" });
     }
 
+    // hashes new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
     // Update user password in the database
