@@ -220,6 +220,3 @@ async function updatePassword(req: Request, res: Response) {
 }
 
 export { userRouter };
-
-// https://www.usebruno.com/
-// MVC model view controller
