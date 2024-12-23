@@ -44,14 +44,13 @@ export class Tokens {
   async getUserForToken(token: string, scope: string) {
     // Hash the provided token
     const hash = createHash("sha256").update(token).digest("hex");
-    // const validToken = "Bearer AFDDSSWQQWERRTTDSA";
-    const userData = { id: 1, firstName: "testUser" };
 
     const sql = `
-        SELECT id, first_name, last_name, email, email_verified FROM users
+        SELECT users.id, users.first_name, users.last_name, users.email, users.email_verified 
+        FROM users
         INNER JOIN tokens ON users.id = tokens.user_id
         WHERE tokens.hash = $1 AND tokens.expiry > $2 
-        AND token.scope = $3
+        AND tokens.scope = $3
       `;
 
     // Use current timestamp to ensure token is not expired
@@ -65,7 +64,7 @@ export class Tokens {
     if (result.rows.length > 0) {
       return result.rows[0];
     } else {
-      return userData;
+      return null;
     }
   }
 }

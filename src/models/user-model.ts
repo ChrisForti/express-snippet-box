@@ -1,7 +1,6 @@
 import type pg from "pg";
 import bcrypt from "bcrypt";
 import assert from "assert";
-import { db } from "../db/db.js";
 
 type UserModel = {
   id: number;
@@ -13,14 +12,18 @@ type UserModel = {
 };
 
 export class Users {
-  updatePassword(userIdFromToken: string, hashedPassword: string) {
-    throw new Error("Method not implemented.");
-  }
   private pool: pg.Pool;
 
   constructor(pool: pg.Pool) {
     assert(!!pool, "Database connection is required");
     this.pool = pool;
+  }
+
+  async updatePassword(userIdFromToken: string, hashedPassword: string) {
+    // wrap in try catch
+    const sql = "UPDATE users SET password = $1 WHERE id = $2";
+    const params = [hashedPassword, userIdFromToken];
+    await this.pool.query(sql, params);
   }
 
   async createUser(
@@ -235,6 +238,19 @@ export class Users {
       return null;
     }
   }
+
+  // Might need a resetPassword?
+  // async resetPassword(password: string, resetToken: string, userId: number) {
+  //   try {
+  //     // check for fields
+  //     if (!userId || user.id !== userId) {
+  //       console.error("");
+  //       throw new Error("");
+  //     }
+
+  //     const passwordHash = await bcrypt.hash(password, 10);
+  //   } catch (error) {}
+  // }
 
   async deleteUser(id: number) {
     if (!id) {

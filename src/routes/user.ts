@@ -11,6 +11,7 @@ import {
 import { ensureAuthenticated } from "../middleware/auth.js";
 import { transporter } from "../mailer/mailer.js";
 import { nodemailerUser } from "../constants.js";
+import { scope } from "../models/token-model.js";
 
 const userRouter = Router();
 
@@ -18,9 +19,9 @@ userRouter.post("/", createUser);
 userRouter.post("/login", loginUser);
 userRouter.get("/", ensureAuthenticated, getUserById);
 userRouter.put("/", ensureAuthenticated, updateUser);
-userRouter.put("/", ensureAuthenticated, updatePassword);
 userRouter.delete("/", ensureAuthenticated, deleteUser);
 userRouter.post("/reset", sendResetEmail);
+userRouter.put("/reset", updatePassword);
 
 async function createUser(req: Request, res: Response) {
   const { email, firstName, lastName, password } = req.body;
@@ -165,7 +166,7 @@ async function sendResetEmail(req: Request, res: Response) {
       from: `"Snippet Box - No Reply" <${nodemailerUser}>`, // sender address
       to: email, // recipient
       subject: "Password Reset - Snippet Box", // subject line
-      text: `We have recieved a request to reset your password.\n\nTo reset your password send a PUT request with your code and new password to /users/reset\n\nYour code is: ${resetToken}\n\nIf you did not make this request, you can safely ignore this email.\n\nSincerely,\nSnippet Box Team`,
+      text: `We have recieved a request to reset your password.\n\nTo reset your password send a PUT request with your token and new password to /users/reset\n\nYour token is: ${resetToken}\n\nIf you did not make this request, you can safely ignore this email.\n\nSincerely,\nSnippet Box Team`,
       // html:
     };
 
@@ -187,30 +188,31 @@ async function sendResetEmail(req: Request, res: Response) {
 }
 
 async function updatePassword(req: Request, res: Response) {
-  const { resetToken, newPassword, userId } = req.body;
+  const { token, password } = req.body;
 
   // checks for presence of user id, and reset token
-  if (!resetToken || !newPassword) {
+  if (!token || !password) {
     res
       .status(400)
       .json({ message: "Reset token and new password are required" });
   }
   try {
-    // Verify the resetToken and retrieve userId
-    const userIdFromToken = await db.Models.Tokens.generatePasswordResetToken(
-      resetToken
+    // Verify the token and retrieve userId
+    const user = await db.Models.Tokens.getUserForToken(
+      token,
+      scope.PASSWORD_RESET
     );
 
     // checks if the user Id matches the id, and token sent.
-    if (!userIdFromToken || userId !== userIdFromToken) {
+    if (!user) {
       return res.status(400).json({ message: "Invalid reset token or user" });
     }
 
     // hashes new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Update user password in the database
-    await db.Models.Users.updatePassword(userIdFromToken, hashedPassword);
+    await db.Models.Users.updatePassword(user.id, hashedPassword);
 
     return res.status(200).json({ message: "Password updated successfully" });
   } catch (error) {

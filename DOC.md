@@ -53,3 +53,8 @@
 ## token
 
 "ttDmfeckgKtRan0R1se9RhH2_GdKByu2GB2ABHZQnPg"
+
+## curl commands to reset password
+
+- `BODY='{"email": "st8razed@gmail.com", "password": "somepassword"}'`
+- `curl -d "$BODY" -X PUT -H "Content-Type: application/json" http://localhost:3000/users/reset`
