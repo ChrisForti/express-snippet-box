@@ -239,19 +239,6 @@ export class Users {
     }
   }
 
-  // Might need a resetPassword?
-  // async resetPassword(password: string, resetToken: string, userId: number) {
-  //   try {
-  //     // check for fields
-  //     if (!userId || user.id !== userId) {
-  //       console.error("");
-  //       throw new Error("");
-  //     }
-
-  //     const passwordHash = await bcrypt.hash(password, 10);
-  //   } catch (error) {}
-  // }
-
   async deleteUser(id: number) {
     if (!id) {
       throw new Error("user id is missing");
