@@ -25,12 +25,14 @@
 
 `curl -d '{"username": "Chris"}' -H "Content-Type: application/json" -X POST localhost:3000/user`
 
-- example of curl user login:
+- Body of curl user login:
   `BODY='{"email":"st8razed@gmail.com","firstName":"chris","lastName":"forti","password":"pa55word"}'`
-  - The run your curl
-    ` curl -d "$BODY" -H 'Content-Type: application/json' localhost:3000/users/login`
-  - then capture token hash
-    `{"message":"User retrieved successfully","token":"LGMwu7cD8cmhPDpJ8JqD27SGpjzaHmqeUgHr6i97vko"}% `
+- The run your curl
+  ` curl -d "$BODY" -H 'Content-Type: application/json' localhost:3000/users/login`
+- then capture token hash
+  `{"message":"User retrieved successfully","token":"LGMwu7cD8cmhPDpJ8JqD27SGpjzaHmqeUgHr6i97vko"}% `
+- - `BODY='{"email": "st8razed@gmail.com", "password": "somepassword"}'`
+  - `curl -d "$BODY"  -H "Content-Type: application/json" -X PUT http://localhost:3000/users/reset`
 
 ## userModel suggestions from chad
 
@@ -55,6 +57,3 @@
 "ttDmfeckgKtRan0R1se9RhH2_GdKByu2GB2ABHZQnPg"
 
 ## curl commands to reset password
-
-- `BODY='{"email": "st8razed@gmail.com", "password": "somepassword"}'`
-- `curl -d "$BODY" -X PUT -H "Content-Type: application/json" http://localhost:3000/users/reset`
