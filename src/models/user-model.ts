@@ -20,6 +20,10 @@ export class Users {
   }
 
   async updatePassword(userIdFromToken: string, hashedPassword: string) {
+    if (!userIdFromToken || !hashedPassword) {
+      // needs work TODO
+      throw new Error("Reset token and new password are required");
+    }
     try {
       const sql = "UPDATE users SET password = $1 WHERE id = $2";
       const params = [hashedPassword, userIdFromToken];
