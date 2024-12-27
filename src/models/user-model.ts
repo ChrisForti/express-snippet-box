@@ -20,10 +20,13 @@ export class Users {
   }
 
   async updatePassword(userIdFromToken: string, hashedPassword: string) {
-    // wrap in try catch
-    const sql = "UPDATE users SET password = $1 WHERE id = $2";
-    const params = [hashedPassword, userIdFromToken];
-    await this.pool.query(sql, params);
+    try {
+      const sql = "UPDATE users SET password = $1 WHERE id = $2";
+      const params = [hashedPassword, userIdFromToken];
+      await this.pool.query(sql, params);
+    } catch (error) {
+      console.error("Error updating password:", error);
+    }
   }
 
   async createUser(
