@@ -31,7 +31,7 @@
   ` curl -d "$BODY" -H 'Content-Type: application/json' localhost:3000/users/login`
 - then capture token hash
   `{"message":"User retrieved successfully","token":"LGMwu7cD8cmhPDpJ8JqD27SGpjzaHmqeUgHr6i97vko"}% `
-- - `BODY='{"email": "st8razed@gmail.com", "password": "somepassword"}'`
+- `BODY='{"email": "st8razed@gmail.com", "password": "somepassword"}'`
   - `curl -d "$BODY"  -H "Content-Type: application/json" -X PUT http://localhost:3000/users/reset`
 
 ## userModel suggestions from chad
